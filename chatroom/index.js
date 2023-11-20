@@ -12,6 +12,9 @@ const chat_history = [
 ]
 
 $(document).ready(function(){
+    
+    fetch_contacts_from_DB();
+
 
     $("#logOut_btn").on("click", function(e){
         e.stopPropagation();
@@ -84,23 +87,31 @@ function make_text_to_DOM(element){
 
 function fetch_contacts_from_DB()
 {   
-    $.ajax("chatroom/chatroom.inc.php",{
+    $.ajax("chatroom/fetch_contacts_from_DB.php",{
     type:"POST",
     datatype: "json",
     data:{},
-    success: function(data)
+    success: function($data)
     {
-
+        $data = JSON.parse($data);
+        display_contacts_list($data);
     }
 })
-}
-
-function display_contacts_list($array){
-
 
 }
 
-function load_contacts(){
+function display_contacts_list($data){
+    $data.forEach((contact)=>{
+        $(".contact_list").append(`
+        <div class="contact">${contact['name']}</div>
+        `)
+    })
+
+
+
+}
+
+function load_contacts($data){
 
 }
 

@@ -16,7 +16,6 @@
     </div>
     <div class="body">
         <div class="contact_list">
-            <div class="contact"></div>
         </div>
         <div class="chat">
             <div class="message_area">

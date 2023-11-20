@@ -13,9 +13,16 @@
     
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
-    $row= mysqli_fetch_all($result);
+
+
+    $array = array();
+    while ($row= mysqli_fetch_assoc($result)) {
+        array_push($array, $row);
+    };
+
     mysqli_stmt_close($stmt);
     mysqli_close($conn);
-    return $row;
+
+    return $array;
     }
 ?>
