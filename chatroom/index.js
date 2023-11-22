@@ -13,8 +13,56 @@ const chat_history = [
 
 $(document).ready(function(){
     
-    fetch_contacts_from_DB();
+    var idle_time = 0;
 
+    /* idle_time
+        positive numer: idle duration
+        0 : into idle mode
+        -1 : user acting 
+    
+    */
+    var listen_idle = setInterval(()=>{
+        console.log(idle_time);
+        if(idle_time<0)
+        {idle_time = 0;}
+        else if(idle_time==6){
+            alert("已閒置"+ idle_time + "秒")
+            clearInterval(listen_idle);
+        }
+        else{
+            idle_time++;
+        }
+    }, 1000);
+
+    $(window).on('keydown mousedown mouseover scroll', function(e){
+        console.log(idle_time);
+
+
+        if(idle_time==-1)
+        {return true}
+        
+        if(idle_time==6)
+        {
+            listen_idle = setInterval(()=>{
+                console.log(idle_time);
+                if(idle_time<0)
+                {idle_time = 0;}
+                else if(idle_time==6){
+                    alert("已閒置"+ idle_time + "秒")
+                    clearInterval(listen_idle);
+                }
+                else{
+                    idle_time++;
+                }
+            }, 1000);
+        }
+
+        idle_time = -1;
+
+    })
+
+    fetch_contacts_from_DB();
+   
 
     $("#logOut_btn").on("click", function(e){
         e.stopPropagation();
@@ -61,6 +109,7 @@ $(document).ready(function(){
     })
 
 })
+
 
 function fetchMessage(){
     return chat_history.slice().reverse()
