@@ -89,7 +89,6 @@ $(document).ready(function(){
                 window.location.replace("http://localhost:4000/logIn");
             }
         })
-        
     })
 
     $("*").on("click", function(e){

@@ -2,6 +2,10 @@
 namespace MyApp;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
+require_once('asset/setup/DBconnect.php');
+
+
+
 
 $GLOBALS['clients']= array();
 var_dump($GLOBALS['clients']);
@@ -73,10 +77,16 @@ class Chat implements MessageComponentInterface {
                 {
                     unset($socket[$index]); 
                     
-                    if(empty($socket))
-                    {unset($clients[$uid]);}
 
-                    
+
+                    if(empty($socket))
+                    {
+                        unset($clients[$uid]);
+                        change_user_status('offline', $uid);
+                        echo "clear";
+
+                    }
+
                 }
             }
 
@@ -95,7 +105,7 @@ class Chat implements MessageComponentInterface {
 
 function change_user_status($status, $uid){
 
-    $sql = "update users set status = '$status' where id = $uid ;";
+    $sql = "update users set status = '$status' where id = 1 ;";
     $conn = connection();
     $stmt = mysqli_stmt_init($conn);
     mysqli_stmt_prepare($stmt, $sql);
