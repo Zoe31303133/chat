@@ -25,10 +25,9 @@ $(document).ready(function(){
                     password: $("#password").val()
                 },
                 success: function(response){
-
                     switch(response){
                         case "no_user":
-                            alter("無此帳號");
+                            alert("無此帳號");
                             break;
                         case "wrong_password":
                             alert("密碼錯誤！")
