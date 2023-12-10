@@ -1,72 +1,93 @@
 <?php
 session_start();
 require_once('../asset/setup/DBconnect.php');
+require_once('../chatroom/change_user_status.php');
 
-if(!isset($_POST['name']))
+if(!isset($_POST['uid']))
 { die; }
 
-$name = $_POST['name'];
-if(!user_exist($name))
-{return false;}
+$uid = (int)$_POST['uid'];
+
+if(!user_exist($uid))
+{
+    echo "no_user";
+    die;
+}
+
 
 $password = $_POST['password'];
 $encrypted_password = encrypt($password);
-logIn($name, $encrypted_password);
+
+
+logIn($uid, $encrypted_password);
 
 
 //TODO: 與signUp.inc.php的function重複
 function encrypt($password)
 {
     //TODO: 實作加密
-    return "encrypted_password";
+    return $password;
 }
 
-function user_exist($name){
-    $sql = "select count(name) from users where name = ?";
+function user_exist($uid){
+    $sql = "select count(id) from users where id = ?";
     $conn = connection();
     $stmt = mysqli_stmt_init($conn);
     mysqli_stmt_prepare($stmt, $sql);
-    mysqli_stmt_bind_param($stmt, 's', $name);
+    mysqli_stmt_bind_param($stmt, 'i', $uid);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $row= mysqli_fetch_assoc($result);
     mysqli_stmt_close($stmt);
     mysqli_close($conn);
-    
-    if($row['count(name)']==0)
+
+    if($row['count(id)']==0)
     {
-        echo "使用者不存在";
         return false;
     }
     else
     {
-        return true;}
+        return true;
+    }
+
+    
 }
 
-function logIn($name, $encrypted_password)
+function setSession($uid)
 {
-    $sql = "select count(name) from users where name = ? and password = ? ;";
+    $_SESSION['uid']=$uid;
+}
+
+function logIn($uid, $encrypted_password)
+{
+    //TODO: psw 改成 encrypted_password
+    $sql = "select count(id) from users where id = ? and password = ?;";
+
     $conn = connection();
     $stmt = mysqli_stmt_init($conn);
     mysqli_stmt_prepare($stmt, $sql);
-    mysqli_stmt_bind_param($stmt, 'ss', $name, $encrypted_password);
+    //TODO: psw 改成 encrypted_password
+    mysqli_stmt_bind_param($stmt, 'is', $uid, $encrypted_password);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $row= mysqli_fetch_assoc($result);
     mysqli_stmt_close($stmt);
     mysqli_close($conn);
     
-    if($row['count(name)']==0)
+
+    if($row['count(id)']==0)
     {
         echo "wrong_password";
-        return false;
     }
     else
     {
         echo "login_success";
-        return true;
+        setSession($uid);
+        change_user_status('online', $uid);
+        
     }
 }
+
 
 
 ?>
