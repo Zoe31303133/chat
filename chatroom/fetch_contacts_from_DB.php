@@ -1,5 +1,15 @@
 <?php
     session_start();
+
+    if(isset($_SESSION['uid']))
+    {
+        return false;
+    }
+    else
+    {
+        $uid=$_SESSION['uid'];
+    }
+    
     require_once('../asset/setup/DBconnect.php');
 
     $result = get_contacts();
@@ -25,4 +35,3 @@
 
     return $array;
     }
-?>

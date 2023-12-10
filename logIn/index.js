@@ -17,15 +17,19 @@ $(document).ready(function(){
         
        if($isValid==true)
        {
-            $.ajax("logIn/logIn.inc.php",{
+            $.ajax("logIn/logIn.php",{
                 type: "POST",
                 datatype: "json",
                 data: {
-                    name: $("#name").val(),
+                    uid: $("#name").val(),
                     password: $("#password").val()
                 },
-                success: function(data){
-                    switch(data){
+                success: function(response){
+
+                    switch(response){
+                        case "no_user":
+                            alter("無此帳號");
+                            break;
                         case "wrong_password":
                             alert("密碼錯誤！")
                             break;

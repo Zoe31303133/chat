@@ -9,6 +9,16 @@ set_time_limit(0);
 // 缓冲输出
 ob_implicit_flush();
 
+if(isset($_SESSION['uid']))
+{
+    return false;
+}
+else
+{
+    $uid=$_SESSION['uid'];
+}
+
+
 $host = "localhost";
 $port = 12345;
 
@@ -42,7 +52,7 @@ while (true) {
             if ($readSocket == $socket) {
                 // 有新连接
                 $newSocket = socket_accept($socket);
-                $sockets["uid"] =$newSocket;
+                $sockets[$uid] =$newSocket;
                 $clients[] = $newSocket;
                 echo "new connection...";
 

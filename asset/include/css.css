@@ -41,6 +41,15 @@ body{
     height: 50px;
 }
 
+.status{
+    height: 10px;
+    width: 10px;
+}
+
+.offline{
+    background-color: gray;
+}
+
 .contact:hover{
     background-color: gray;
 }

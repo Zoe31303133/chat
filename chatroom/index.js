@@ -1,4 +1,4 @@
-const user = "01"; //本人
+
 
 const chat_history = [
     ["01", "message"],
@@ -12,6 +12,14 @@ const chat_history = [
 ]
 
 $(document).ready(function(){
+
+    var conn = new WebSocket('ws://localhost:8080');
+    conn.onopen = function(e) {
+        console.log("Connection established!");
+        conn.send(`{"action":"connect", "uid":"1"}`);
+    };
+
+    $.get("chatroom/update_online_status.php",{status:"online"})
     
     var idle_time = 0;
 
@@ -21,18 +29,20 @@ $(document).ready(function(){
         -1 : user acting 
     
     */
+
     var listen_idle = setInterval(()=>{
         console.log(idle_time);
         if(idle_time<0)
         {idle_time = 0;}
         else if(idle_time==6){
-            alert("已閒置"+ idle_time + "秒")
+            $.get("chatroom/update_online_status.php",{status:"offline"})
             clearInterval(listen_idle);
         }
         else{
             idle_time++;
         }
     }, 1000);
+    
 
     $(window).on('keydown mousedown mouseover scroll', function(e){
         console.log(idle_time);
@@ -43,12 +53,17 @@ $(document).ready(function(){
         
         if(idle_time==6)
         {
+
+            $.get("chatroom/update_online_status.php",{status:"online"});
+
+
+            console.log('更新上線狀態至database');
             listen_idle = setInterval(()=>{
                 console.log(idle_time);
                 if(idle_time<0)
                 {idle_time = 0;}
                 else if(idle_time==6){
-                    alert("已閒置"+ idle_time + "秒")
+                    $.get("chatroom/update_online_status.php",{status:"offline"})
                     clearInterval(listen_idle);
                 }
                 else{
@@ -152,7 +167,10 @@ function fetch_contacts_from_DB()
 function display_contacts_list($data){
     $data.forEach((contact)=>{
         $(".contact_list").append(`
-        <div class="contact">${contact['name']}</div>
+        <div class="contact">
+            <div> ${contact['name']}</div>
+            <div class="status offline">  </div>
+    </div>
         `)
     })
 
