@@ -7,11 +7,13 @@ if(!isset($_POST['uid']))
 { die; }
 
 $uid = (int)$_POST['uid'];
+
 if(!user_exist($uid))
 {
     echo "no_user";
     die;
 }
+
 
 $password = $_POST['password'];
 $encrypted_password = encrypt($password);
@@ -24,7 +26,7 @@ logIn($uid, $encrypted_password);
 function encrypt($password)
 {
     //TODO: 實作加密
-    return "encrypted_password";
+    return $password;
 }
 
 function user_exist($uid){
@@ -59,13 +61,13 @@ function setSession($uid)
 function logIn($uid, $encrypted_password)
 {
     //TODO: psw 改成 encrypted_password
-    $sql = "select count(id) from users where id = ? and password = 'psw';";
+    $sql = "select count(id) from users where id = ? and password = ?;";
 
     $conn = connection();
     $stmt = mysqli_stmt_init($conn);
     mysqli_stmt_prepare($stmt, $sql);
     //TODO: psw 改成 encrypted_password
-    mysqli_stmt_bind_param($stmt, 'i', $uid);
+    mysqli_stmt_bind_param($stmt, 'is', $uid, $encrypted_password);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $row= mysqli_fetch_assoc($result);
