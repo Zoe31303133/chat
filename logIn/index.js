@@ -17,7 +17,7 @@ $(document).ready(function(){
         
        if($isValid==true)
        {
-            $.ajax("logIn/logIn.php",{
+            $.ajax("logIn/logIn.inc.php",{
                 type: "POST",
                 datatype: "json",
                 data: {
