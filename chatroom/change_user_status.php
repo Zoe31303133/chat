@@ -1,4 +1,5 @@
 <?php
+
 function change_user_status($status, $uid){
 
     $sql = "update users set status = '$status' where id = '$uid';";
