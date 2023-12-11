@@ -34,6 +34,7 @@ $(document).ready(function(){
                             break;
                         case "login_success":
                             alert("登入成功！")
+                            sessionStorage.setItem("uid", $("#name").val());
                             window.location.replace("http://localhost:4000/chatroom");
                             break;
                     }

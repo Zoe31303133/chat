@@ -13,11 +13,17 @@ const chat_history = [
 
 $(document).ready(function(){
 
+    $uid = sessionStorage.getItem("uid");
+
     var conn = new WebSocket('ws://localhost:8080');
     conn.onopen = function(e) {
         console.log("Connection established!");
-        conn.send(`{"action":"connect", "uid":"1"}`);
+        conn.send(`{"action":"connect", "uid":"`+ $uid+`"}`);
     };
+
+    conn.onmessage = function(e){
+      alert(e.data);
+    }
 
     $.get("chatroom/update_online_status.php",{status:"online"})
     
