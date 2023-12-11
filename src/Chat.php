@@ -21,6 +21,7 @@ class Chat implements MessageComponentInterface {
         // Store the new connection to send messages to later
         $this->clients->attach($conn);
 
+
         
     }
 
@@ -38,24 +39,25 @@ class Chat implements MessageComponentInterface {
                 
                 if(!isset($clients[$uid]))
                 {
-                    echo "set";
                     $clients[$uid]=[];
                 }
 
                 array_push($clients[$uid],$sessionID);
 
                 print_r($clients);
+
+                foreach ($this->clients as $client) {
+                    if ($from !== $client) {
+                        // The sender is not the receiver, send to each client connected
+                        $client->send("使用者".$uid."已上線");
+                    }
+                }
                 break;
 
         }
 
 
-        foreach ($this->clients as $client) {
-            if ($from !== $client) {
-                // The sender is not the receiver, send to each client connected
-                $client->send("");
-            }
-        }
+        
     }
 
     public function onClose(ConnectionInterface $conn) {
@@ -65,29 +67,33 @@ class Chat implements MessageComponentInterface {
         $this->clients->detach($conn);
 
         $clients = &$GLOBALS['clients'];
-        $sessionID = $conn->resourceId;
+        $closed_sessionID = $conn->resourceId;
 
         foreach($clients as $uid=>&$socket)
         {   
-            foreach($socket as &$socket_session)
+            foreach($socket as $index=>$sessionID)
             {
-                $index = array_search($sessionID,$socket);
-                echo ("index=".$index).".";
-                if($index>=0)
+                if($sessionID==$closed_sessionID)
                 {
-                    unset($socket[$index]); 
-                    
-
-
-                    if(empty($socket))
-                    {
-                        unset($clients[$uid]);
-                        change_user_status('offline', $uid);
-                        echo "clear";
-
-                    }
-
+                    unset($socket[$index]);
                 }
+            }
+
+            
+            if(empty($socket))
+            {
+                unset($clients[$uid]);
+                change_user_status('offline', $uid);
+
+                foreach ($this->clients as $client) {
+                    if ($conn !== $client) {
+                        // The sender is not the receiver, send to each client connected
+                        $client->send("使用者".$uid."已下線");
+                    }
+                }
+
+                print_r($clients);
+                break;
             }
 
         }
