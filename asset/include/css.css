@@ -46,8 +46,8 @@ body{
     width: 10px;
 }
 
-.offline{
-    background-color: gray;
+.online{
+    background-color: greenyellow;
 }
 
 .contact:hover{
