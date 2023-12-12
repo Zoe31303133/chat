@@ -14,7 +14,7 @@ $(document).ready(function(){
 
         if(validTest("id")==true)
         {
-            if(validTest("password")=true)
+            if(validTest("password")==true)
             {
                 $.ajax("logIn/logIn.inc.php",{
                     type: "POST",
