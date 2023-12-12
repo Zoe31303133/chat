@@ -49,7 +49,7 @@ class Chat implements MessageComponentInterface {
                 foreach ($this->clients as $client) {
                     if ($from !== $client) {
                         // The sender is not the receiver, send to each client connected
-                        $client->send("使用者".$uid."已上線");
+                        $client->send(`{"action":"online", "uid":"`.$uid.`"}}`);
                     }
                 }
                 break;
@@ -88,7 +88,7 @@ class Chat implements MessageComponentInterface {
                 foreach ($this->clients as $client) {
                     if ($conn !== $client) {
                         // The sender is not the receiver, send to each client connected
-                        $client->send("使用者".$uid."已下線");
+                        $client->send(`{"action":"offline", "uid":"`.$uid.`"}}`);
                     }
                 }
 
