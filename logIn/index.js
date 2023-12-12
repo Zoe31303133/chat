@@ -69,10 +69,8 @@ function validTest(field){
     }
 }
 
-
 // level 1 function
 function isEmpty(field){
-
     if($("#"+field).val()=="")
     {
         alert(field+"空白");
