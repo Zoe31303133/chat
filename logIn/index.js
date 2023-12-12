@@ -12,34 +12,36 @@ $(document).ready(function(){
  
         $isValid=true;
 
-        $isValid=validTest("name");
-        $isValid=validTest("password");
-        
-       if($isValid==true)
-       {
-            $.ajax("logIn/logIn.inc.php",{
-                type: "POST",
-                datatype: "json",
-                data: {
-                    uid: $("#name").val(),
-                    password: $("#password").val()
-                },
-                success: function(response){
-                    switch(response){
-                        case "no_user":
-                            alert("無此帳號");
-                            break;
-                        case "wrong_password":
-                            alert("密碼錯誤！")
-                            break;
-                        case "login_success":
-                            alert("登入成功！")
-                            sessionStorage.setItem("uid", $("#name").val());
-                            window.location.replace("http://localhost:4000/chatroom");
-                            break;
+        if(validTest("name")==true)
+        {
+            if(validTest("password")=true)
+            {
+                $.ajax("logIn/logIn.inc.php",{
+                    type: "POST",
+                    datatype: "json",
+                    data: 
+                    {
+                            uid: $("#name").val(),
+                            password: $("#password").val()
+                    },
+                    success: function(response)
+                    {
+                            switch(response){
+                                case "no_user":
+                                    alert("無此帳號");
+                                    break;
+                                case "wrong_password":
+                                    alert("密碼錯誤！")
+                                    break;
+                                case "login_success":
+                                    alert("登入成功！")
+                                    sessionStorage.setItem("uid", $("#name").val());
+                                    window.location.replace("http://localhost:4000/chatroom");
+                                    break;
+                            }
                     }
-                }
-            })    
+                })    
+            }
         }
     }); 
 });
