@@ -7,7 +7,7 @@
 
 
     function get_contacts(){
-            $sql = "select id, name from users;";
+            $sql = "select id, name, status from users;";
             $conn = connection();
             $stmt = mysqli_stmt_init($conn);
             mysqli_stmt_prepare($stmt, $sql);

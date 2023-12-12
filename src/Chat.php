@@ -3,7 +3,7 @@ namespace MyApp;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 require_once('asset/setup/DBconnect.php');
-
+require_once('chatroom/change_user_status.php');
 
 
 
@@ -49,7 +49,8 @@ class Chat implements MessageComponentInterface {
                 foreach ($this->clients as $client) {
                     if ($from !== $client) {
                         // The sender is not the receiver, send to each client connected
-                        $client->send(`{"action":"online", "uid":"`.$uid.`"}}`);
+                        $data = '{"action":"status", "user":"'.$uid.'"}';
+                        $client->send($data);                
                     }
                 }
                 break;
@@ -83,13 +84,15 @@ class Chat implements MessageComponentInterface {
             if(empty($socket))
             {
                 unset($clients[$uid]);
+                
                 change_user_status('offline', $uid);
 
                 foreach ($this->clients as $client) {
                     if ($conn !== $client) {
                         // The sender is not the receiver, send to each client connected
-                        $client->send(`{"action":"offline", "uid":"`.$uid.`"}}`);
-                    }
+                       
+                        $data = '{"action":"status", "user":"'.$uid.'"}';
+                        $client->send($data);                             }
                 }
 
                 print_r($clients);
@@ -108,18 +111,5 @@ class Chat implements MessageComponentInterface {
     }
 }
 
-
-function change_user_status($status, $uid){
-
-    $sql = "update users set status = '$status' where id = 1 ;";
-    $conn = connection();
-    $stmt = mysqli_stmt_init($conn);
-    mysqli_stmt_prepare($stmt, $sql);
-
-    mysqli_execute($stmt);
-    mysqli_stmt_close($stmt);
-    mysqli_close($conn);
-
-}
 
 ?>

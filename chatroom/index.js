@@ -22,7 +22,17 @@ $(document).ready(function(){
     };
 
     conn.onmessage = function(e){
-      alert(e.data);
+
+        var data = JSON.parse(e.data);
+
+        switch(data['action'])
+        {
+            case "status":
+                //聯絡人清單搜尋id
+                $(".contact_list").html("");
+                fetch_contacts_from_DB();
+                break;
+        }
     }
 
     $.get("chatroom/update_online_status.php",{status:"online"})
@@ -37,10 +47,10 @@ $(document).ready(function(){
     */
 
     var listen_idle = setInterval(()=>{
-        console.log(idle_time);
+        // console.log(idle_time);
         if(idle_time<0)
         {idle_time = 0;}
-        else if(idle_time==6){
+        else if(idle_time==60){
             $.get("chatroom/update_online_status.php",{status:"offline"})
             clearInterval(listen_idle);
         }
@@ -51,7 +61,7 @@ $(document).ready(function(){
     
 
     $(window).on('keydown mousedown mouseover scroll', function(e){
-        console.log(idle_time);
+        // console.log(idle_time);
 
 
         if(idle_time==-1)
@@ -65,7 +75,7 @@ $(document).ready(function(){
 
             console.log('更新上線狀態至database');
             listen_idle = setInterval(()=>{
-                console.log(idle_time);
+                // console.log(idle_time);
                 if(idle_time<0)
                 {idle_time = 0;}
                 else if(idle_time==6){
@@ -82,6 +92,7 @@ $(document).ready(function(){
 
     })
 
+    $(".contact_list").html("");
     fetch_contacts_from_DB();
    
 
@@ -161,23 +172,22 @@ function fetch_contacts_from_DB()
         console.dir(contacts);
         display_contacts_list(contacts);
   });
-
-
-
 }
 
 function display_contacts_list($data){
     $data.forEach((contact)=>{
+        var id = contact['id'];
+        var name = contact['name'];
+        var status = contact['status']=="offline"?"":"online"
+
         $(".contact_list").append(`
-        <div class="contact">
-            <div> ${contact['name']}</div>
-            <div class="status offline">  </div>
+        <div class="contact"  href="${id}">
+            <div> ${name}</div>
+            <div class="status ${status}">  
+        </div>
     </div>
         `)
     })
-
-
-
 }
 
 function load_contacts($data){
@@ -194,3 +204,4 @@ function send_message(){
     <div class="message_text">${$(".message_input_text").val()}</div>
     </div>`);
 }
+
