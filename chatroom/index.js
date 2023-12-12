@@ -138,7 +138,7 @@ function fetchMessage(){
 // add "sent" class if it was sent by me
 function isSentByMe(element){
     var result = "";
-    if(element[0]==user)
+    if(element[0]==$uid)
     {
         result = "sent";
     }
@@ -156,16 +156,13 @@ function make_text_to_DOM(element){
 
 function fetch_contacts_from_DB()
 {   
-    $.ajax("chatroom/fetch_contacts_from_DB.php",{
-    type:"POST",
-    datatype: "json",
-    data:{},
-    success: function($data)
-    {
-        $data = JSON.parse($data);
-        display_contacts_list($data);
-    }
-})
+    $.get( "chatroom/fetch_contacts_from_DB.php", function(data) {
+        var contacts = JSON.parse(data);
+        console.dir(contacts);
+        display_contacts_list(contacts);
+  });
+
+
 
 }
 
@@ -193,7 +190,7 @@ function load_Message_into_chat(){
 
 function send_message(){
     $(".message_area").prepend(`<div class="sent message">
-    <img class="user_img" src="../file/${user}.jpg" alt="photo">
+    <img class="user_img" src="../file/` + $uid + `.jpg" alt="photo">
     <div class="message_text">${$(".message_input_text").val()}</div>
     </div>`);
 }
