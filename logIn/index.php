@@ -15,7 +15,7 @@
 <body>
     <form id="form" method="POST">
 
-    <input type="text" placeholder="name" id="name" name="name">
+    <input type="text" placeholder="id" id="id" name="id">
     <input type="text" placeholder="password" id="password" name="password">
 
 </form>

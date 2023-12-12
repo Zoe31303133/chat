@@ -1,6 +1,6 @@
 /*input field:
 1. photo
-2. name
+2. id
 3. password
 4. password_again
 */
@@ -12,7 +12,7 @@ $(document).ready(function(){
  
         $isValid=true;
 
-        if(validTest("name")==true)
+        if(validTest("id")==true)
         {
             if(validTest("password")=true)
             {
@@ -21,7 +21,7 @@ $(document).ready(function(){
                     datatype: "json",
                     data: 
                     {
-                            uid: $("#name").val(),
+                            uid: $("#id").val(),
                             password: $("#password").val()
                     },
                     success: function(response)
@@ -35,7 +35,7 @@ $(document).ready(function(){
                                     break;
                                 case "login_success":
                                     alert("登入成功！")
-                                    sessionStorage.setItem("uid", $("#name").val());
+                                    sessionStorage.setItem("uid", $("#id").val());
                                     window.location.replace("http://localhost:4000/chatroom");
                                     break;
                             }
@@ -49,11 +49,11 @@ $(document).ready(function(){
 // level 2 function
 function validTest(field){
     switch(field){
-        case "name":
+        case "id":
             //TODO:補充驗證機制
-            if(isEmpty("name"))
+            if(isEmpty("id"))
             {return false;}
-            console.log("name");
+            console.log("id");
             return true;
             //TD
             break;
