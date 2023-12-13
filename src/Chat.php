@@ -6,11 +6,22 @@ require_once('asset/setup/DBconnect.php');
 require_once('chatroom/change_user_status.php');
 
 
+#region main code
 
+//TODO: 目前只有一個clients list，之後可以根據用途創建不同list。
 $GLOBALS['clients']= array();
+
+
+/* TEST */ 
 var_dump($GLOBALS['clients']);
 
+#endregion
+
+
+#region functions
+
 class Chat implements MessageComponentInterface {
+
     protected $clients;
 
     public function __construct() {
@@ -20,21 +31,22 @@ class Chat implements MessageComponentInterface {
     public function onOpen(ConnectionInterface $conn) {
         // Store the new connection to send messages to later
         $this->clients->attach($conn);
-
-
-        
     }
 
-    public function onMessage(ConnectionInterface $from, $msg) {
-        $clients = &$GLOBALS['clients'];
-        $msg = json_decode($msg);
-        $action = $msg->action;
-        $uid = $msg->uid;
-        $sessionID = $from->resourceId;
-                
-        switch($msg->action)
-        {
+    public function onMessage(ConnectionInterface $client, $message) {
+        
+        // message format : '{"action":"", "uid":""}'
 
+        $clients = &$GLOBALS['clients'];
+        $message = json_decode($message);
+        $action = $message->action;
+        $uid = $message->uid;
+                        
+        switch($message->action)
+        {
+            /*
+                action type : connect
+            */
             case "connect":
                 
                 if(!isset($clients[$uid]))
@@ -42,23 +54,20 @@ class Chat implements MessageComponentInterface {
                     $clients[$uid]=[];
                 }
 
-                array_push($clients[$uid],$sessionID);
+                array_push($clients[$uid],$client->resourceId);
+                change_user_status('online', $uid);
 
+                /* TEST */ 
                 print_r($clients);
 
                 foreach ($this->clients as $client) {
-                    if ($from !== $client) {
+                    
                         // The sender is not the receiver, send to each client connected
                         $data = '{"action":"status", "user":"'.$uid.'"}';
                         $client->send($data);                
-                    }
+                    
                 }
-                break;
-
         }
-
-
-        
     }
 
     public function onClose(ConnectionInterface $conn) {
@@ -95,6 +104,7 @@ class Chat implements MessageComponentInterface {
                         $client->send($data);                             }
                 }
 
+                /* TEST */ 
                 print_r($clients);
                 break;
             }
@@ -111,5 +121,6 @@ class Chat implements MessageComponentInterface {
     }
 }
 
+#endregion
 
 ?>

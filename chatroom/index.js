@@ -1,43 +1,24 @@
 
 
 const chat_history = [
-    ["01", "message"],
-    ["02", "message"],
-    ["01", "message"],
-    ["02", "message"],
-    ["02", "message"],
-    ["01", "message"],
-    ["02", "message"],
-    ["02", "message"]
+    ["1", "message"],
+    ["2", "message"],
+    ["1", "message"],
+    ["2", "message"],
+    ["2", "message"],
+    ["1", "message"],
+    ["2", "message"],
+    ["2", "message"]
 ]
 
 $(document).ready(function(){
 
+
     $uid = sessionStorage.getItem("uid");
 
-    var conn = new WebSocket('ws://localhost:8080');
-    conn.onopen = function(e) {
-        console.log("Connection established!");
-        conn.send(`{"action":"connect", "uid":"`+ $uid+`"}`);
-    };
+    var conn = WebSocket;
 
-    conn.onmessage = function(e){
-
-        var data = JSON.parse(e.data);
-
-        switch(data['action'])
-        {
-            case "status":
-                //聯絡人清單搜尋id
-                $(".contact_list").html("");
-                fetch_contacts_from_DB();
-                break;
-        }
-    }
-
-    $.get("chatroom/update_online_status.php",{status:"online"})
-    
-    var idle_time = 0;
+    online($uid);
 
     /* idle_time
         positive numer: idle duration
@@ -45,21 +26,21 @@ $(document).ready(function(){
         -1 : user acting 
     
     */
+    var idle_time = 0;
 
     var listen_idle = setInterval(()=>{
         // console.log(idle_time);
         if(idle_time<0)
         {idle_time = 0;}
         else if(idle_time==60){
-            $.get("chatroom/update_online_status.php",{status:"offline"})
+            offline();
             clearInterval(listen_idle);
         }
         else{
             idle_time++;
         }
-    }, 1000);
+    }, 1000);  
     
-
     $(window).on('keydown mousedown mouseover scroll', function(e){
         // console.log(idle_time);
 
@@ -70,8 +51,7 @@ $(document).ready(function(){
         if(idle_time==6)
         {
 
-            $.get("chatroom/update_online_status.php",{status:"online"});
-
+            online($uid);
 
             console.log('更新上線狀態至database');
             listen_idle = setInterval(()=>{
@@ -79,7 +59,7 @@ $(document).ready(function(){
                 if(idle_time<0)
                 {idle_time = 0;}
                 else if(idle_time==6){
-                    $.get("chatroom/update_online_status.php",{status:"offline"})
+                    offline();
                     clearInterval(listen_idle);
                 }
                 else{
@@ -205,3 +185,28 @@ function send_message(){
     </div>`);
 }
 
+function online($uid){
+    conn = new WebSocket('ws://localhost:8080');
+    conn.onopen = function(e) {
+        console.log("Connection established!");
+        conn.send(`{"action":"connect", "uid":"`+ $uid+`"}`);
+
+        conn.onmessage = function(e){
+
+            var data = JSON.parse(e.data);
+            switch(data['action'])
+            {
+                case "status":
+                    //聯絡人清單搜尋id
+                    $(".contact_list").html("");
+                    fetch_contacts_from_DB();
+                    break;
+            }
+        }
+    };
+}
+
+
+function offline(){
+    conn.close();
+}
