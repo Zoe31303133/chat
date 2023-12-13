@@ -1,5 +1,4 @@
-
-
+// message db example
 const chat_history = [
     ["1", "message"],
     ["2", "message"],
@@ -13,21 +12,32 @@ const chat_history = [
 
 $(document).ready(function(){
 
+//#region main code
 
     $uid = sessionStorage.getItem("uid");
-
     var conn = WebSocket;
-
     online($uid);
+
+
+    // Initialize
+
+    $(".contact_list").html("");
+    fetch_contacts_from_DB();
+    
+    load_contacts();
+    load_Message_into_chat();
+
+//#endregion
+
+
+//#region listener
 
     /* idle_time
         positive numer: idle duration
         0 : into idle mode
         -1 : user acting 
-    
     */
     var idle_time = 0;
-
     var listen_idle = setInterval(()=>{
         // console.log(idle_time);
         if(idle_time<0)
@@ -78,10 +88,6 @@ $(document).ready(function(){
 
     })
 
-    $(".contact_list").html("");
-    fetch_contacts_from_DB();
-   
-
     $("#logOut_btn").on("click", function(e){
         e.stopPropagation();
         $.ajax("logOut",{
@@ -95,14 +101,8 @@ $(document).ready(function(){
     })
 
     $("*").on("click", function(e){
-        e.stopPropagation();
-
-    
+        e.stopPropagation();    
     })
-
-    // Initialize
-    load_contacts();
-    load_Message_into_chat();
 
     $(".message_area").on("scroll", function(){
         if($(this).prop("scrollHeight")+$(this).scrollTop()-$(this).height()<1)
@@ -125,8 +125,12 @@ $(document).ready(function(){
         }
     })
 
+//#endregion
+
 })
 
+
+//#region functions
 
 function fetchMessage(){
     return chat_history.slice().reverse()
@@ -176,10 +180,6 @@ function display_contacts_list($data){
     })
 }
 
-function load_contacts($data){
-
-}
-
 function load_Message_into_chat(){
     fetchMessage().forEach((element)=>{$(".message_area").append(make_text_to_DOM(element));})
 }
@@ -212,7 +212,8 @@ function online($uid){
     };
 }
 
-
 function offline(){
     conn.close();
 }
+
+//#endregion
