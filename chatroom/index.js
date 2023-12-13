@@ -40,6 +40,12 @@ $(document).ready(function(){
             idle_time++;
         }
     }, 1000);  
+
+    var refresh_contacts= setInterval(()=>{
+        $(".contact_list").html("");
+        fetch_contacts_from_DB();
+        
+    }, 10000);
     
     $(window).on('keydown mousedown mouseover scroll', function(e){
         // console.log(idle_time);
