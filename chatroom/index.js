@@ -24,7 +24,7 @@ $(document).ready(function(){
     $(".contact_list").html("");
     fetch_contacts_from_DB();
     
-    load_contacts();
+    // load_contacts();
     load_Message_into_chat();
 
 //#endregion
