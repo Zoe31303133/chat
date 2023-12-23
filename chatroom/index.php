@@ -10,11 +10,19 @@ var_dump($_SESSION);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <script src="chatroom/index.js"></script>
     <link rel="stylesheet" href="../asset/include/css.css">
     <title>CHAT ROOM</title>
 </head>
 <body>
+    <!-- <div>
+        TEST
+    <button id="start">start</button>    
+    <button id="close">close</button>  
+    <button id="act_start">act_start</button>  
+    <button id="act_close">act_close</button>  
+    <div> -->
     <div class="navbar">
         <a class="navbar_btn" href="logIn">登入</a>
         <a class="navbar_btn" href="signUp">註冊</a>
