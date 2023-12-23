@@ -5,6 +5,8 @@ if(!($my_uid = sessionStorage.getItem("uid")))
     window.location.replace("http://localhost:4000/logIn");
 };
 
+let conn = new WebSocket('ws://localhost:8080');
+
 // message db example
 const chat_history = [
     ["1", "message"],
@@ -20,10 +22,16 @@ const chat_history = [
 $(document).ready(function(){
 
 //#region main code
-
-    var conn = WebSocket;
+    
     online($my_uid);
 
+    let time = new Idle_timer();
+
+    //idle_timer 測試按鈕 
+    $("#start").on("click",function(){time.start();});
+    $("#close").on("click",function(){time.close();});
+    $("#act_start").on("click",function(){time.act_listener_open(1);});
+    $("#act_close").on("click",function(){time.act_listener_close(1);});
 
     // Initialize
 
@@ -38,61 +46,6 @@ $(document).ready(function(){
 
 //#region listener
 
-    /* idle_time
-        positive numer: idle duration
-        0 : into idle mode
-        -1 : user acting 
-    */
-    var idle_time = 0;
-    var listen_idle = setInterval(()=>{
-        // console.log(idle_time);
-        if(idle_time<0)
-        {idle_time = 0;}
-        else if(idle_time==60){
-            offline();
-            clearInterval(listen_idle);
-        }
-        else{
-            idle_time++;
-        }
-    }, 1000);  
-
-    var refresh_contacts= setInterval(()=>{
-        $(".contact_list").html("");
-        fetch_contacts_from_DB();
-        
-    }, 10000);
-    
-    $(window).on('keydown mousedown mouseover scroll', function(e){
-        // console.log(idle_time);
-
-
-        if(idle_time==-1)
-        {return true}
-        
-        if(idle_time==6)
-        {
-
-            online($my_uid);
-
-            console.log('更新上線狀態至database');
-            listen_idle = setInterval(()=>{
-                // console.log(idle_time);
-                if(idle_time<0)
-                {idle_time = 0;}
-                else if(idle_time==6){
-                    offline();
-                    clearInterval(listen_idle);
-                }
-                else{
-                    idle_time++;
-                }
-            }, 1000);
-        }
-
-        idle_time = -1;
-
-    })
 
     $("#logOut_btn").on("click", function(e){
         e.stopPropagation();
@@ -137,6 +90,71 @@ $(document).ready(function(){
 
 
 //#region functions
+
+class Idle_timer{
+
+    /*
+    duration = -1 means user is active,
+    duration >=0 which is idle duration.
+
+    when duration reaching the maximum, the timer will report user is offline and stop counting.
+    */
+
+    constructor() {
+        this.duration = 0;
+        this.max_duration = 15;
+        this.timer;
+        }
+
+    static timer_algorithm(Idle_timer){
+
+        if(Idle_timer.duration == -1)
+        {
+            Idle_timer.duration = 0;
+        }
+        else if(Idle_timer.duration==Idle_timer.max_duration)
+        {
+            offline();
+            clearInterval(Idle_timer.timer);
+        }
+        else
+        {
+            Idle_timer.duration++;
+        }
+
+        }
+
+    keep_active(){
+
+        if(this.duration==6)
+        {
+            online(this.uid);
+            console.log('上線');
+        }
+
+        this.duration = -1;
+        // console.log("s");
+        }
+
+    start() {
+        this.timer = setInterval(Idle_timer.timer_algorithm, 1000, this);
+        }
+
+    close(){
+        clearInterval(this.timer);
+        }
+
+    act_listener_open(){
+        var time = this;
+        $(window).on('keydown mousedown mouseover scroll', function(){            
+            time.keep_active();});
+        }
+
+    act_listener_close(){
+        var time = this;
+        $(window).off('keydown mousedown mouseover scroll');
+        }      
+}
 
 function fetchMessage(){
     return chat_history.slice().reverse()
