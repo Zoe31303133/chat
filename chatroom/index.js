@@ -5,25 +5,23 @@ if(!($my_uid = sessionStorage.getItem("uid")))
     window.location.replace("http://localhost:4000/logIn");
 };
 
+let session_room_id = sessionStorage.getItem('room_id');
 let conn = new WebSocket('ws://localhost:8080');
-
-// message db example
-const chat_history = [
-    ["1", "message"],
-    ["2", "message"],
-    ["1", "message"],
-    ["2", "message"],
-    ["2", "message"],
-    ["1", "message"],
-    ["2", "message"],
-    ["2", "message"]
-]
 
 $(document).ready(function(){
 
 //#region main code
     
     online($my_uid);
+    load_room(session_room_id);
+    // Initialize
+
+    $(".contact_list").html("");
+    fetch_contacts_from_DB();
+    
+    // load_contacts();
+    load_Message_into_chat();
+
 
     let time = new Idle_timer();
 
@@ -33,13 +31,6 @@ $(document).ready(function(){
     $("#act_start").on("click",function(){time.act_listener_open(1);});
     $("#act_close").on("click",function(){time.act_listener_close(1);});
 
-    // Initialize
-
-    $(".contact_list").html("");
-    fetch_contacts_from_DB();
-    
-    // load_contacts();
-    load_Message_into_chat();
 
 //#endregion
 
@@ -171,7 +162,7 @@ function isSentByMe(element){
     return result;
 }
 
-function make_text_to_DOM(element){
+function create_text_DOM(element){
 
     return `<div class="${isSentByMe(element)} message">
     <img class="user_img" src="../file/${element[0]}.jpg" alt="photo">
@@ -206,8 +197,25 @@ function display_contacts_list($data){
     })
 }
 
-function load_Message_into_chat(){
-    fetchMessage().forEach((element)=>{$(".message_area").append(make_text_to_DOM(element));})
+function load_room(session_room_id){
+        
+    if(!session_room_id)
+    {return false;}
+
+    clear_html(".message_area");
+    load_Message_into_chat(session_room_id);
+
+    }
+
+function load_Message_into_chat(session_room_id){
+    $.get("chatroom/fetch_message_from_DB.php", { room_id: session_room_id})
+    .done(function( data ) {
+        data=JSON.parse(data);
+        data.reverse();
+        data.forEach((element)=>{$(".message_area").append(create_text_DOM(element));} );
+      });
+    
+    // .forEach((element)=>{$(".message_area").append(create_text_DOM(element));})
 }
 
 function send_message(){
@@ -241,5 +249,10 @@ function online($my_uid){
 function offline(){
     conn.close();
 }
+
+function clear_html(element_tag)
+{
+    $(element_tag).html("");}
+
 
 //#endregion
