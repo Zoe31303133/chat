@@ -183,9 +183,17 @@ function display_contacts_list(data){
         var contact_list = document.getElementsByClassName("contact_list");
         contact_list[0].appendChild(contact);
     })
-   
 }
 
+function load_room(session_room_id){
+        
+    if(!session_room_id)
+    {return false;}
+
+    clear_html(".message_area");
+    load_Message_into_chat(session_room_id);
+
+    }
 
 function get_roomID(opposite_uid){
 
@@ -200,16 +208,6 @@ function get_roomID(opposite_uid){
 }
 
 
-function load_room(session_room_id){
-        
-    if(!session_room_id)
-    {return false;}
-
-    clear_html(".message_area");
-    load_Message_into_chat(session_room_id);
-
-    }
-
 function load_Message_into_chat(session_room_id){
     $.get("chatroom/fetch_message_from_DB.php", { room_id: session_room_id})
     .done(function( data ) {
@@ -222,11 +220,27 @@ function load_Message_into_chat(session_room_id){
 }
 
 function send_message(){
+
+    var text = $(".message_input_text").val();
+    var datetime = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    var session_room_id = sessionStorage.getItem("room_id"); 
+
+    // DOM
     $(".message_area").prepend(`<div class="sent message">
     <img class="user_img" src="../file/` + $my_uid + `.jpg" alt="photo">
-    <div class="message_text">${$(".message_input_text").val()}</div>
+    <div class="message_text">${text}</div>
     </div>`);
+
+    $(".message_input_text").val("");
+    $(".message_area").scrollTop($(".message_area").prop("scrollHeight"));
+
+    //Database
+    sql = `insert into messages (text, sentbyuid, datetime, room_id) values ("${text}" , "${$my_uid}" , "${datetime}", "${session_room_id}");`  
+
+    $.post( "chatroom/sendMessage.php", { sql: sql} );
+    conn.send(`{"action":"send_message", "uid":"`+ $my_uid+`" , "room_id":"`+ session_room_id+`"}`);
 }
+
 
 function online($my_uid){
     conn.onopen = function(e) {
@@ -241,11 +255,19 @@ function online($my_uid){
                 case "status":
                     //聯絡人清單搜尋id
                     $(".contact_list").html("");
-                    fetch_contacts_from_DB();
+                    load_contact_list();
+                    break;
+
+                case "receive_message":
+                    var room_id = data['room_id'];
+                    
+                    if(room_id = sessionStorage.getItem("room_id"))
+                    {load_room(room_id);}
                     break;
             }
         }
-    };
+            
+        }
 }
 
 function offline(){
@@ -265,3 +287,17 @@ function clear_html(element_tag)
 
 
 //#endregion
+
+/*筆記區
+
+將全域變數傳入 setInterval 
+setInterval((time)=>{time.close()}, 3000, time);
+
+*/
+
+/*棄用區
+   var refresh_contacts= setInterval(()=>{
+        $(".contact_list").html("");
+        fetch_contacts_from_DB();
+    }, 600000);
+*/

@@ -4,6 +4,8 @@ use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 require_once('asset/setup/DBconnect.php');
 require_once('chatroom/change_user_status.php');
+require_once('chatroom/get_other_room_member.php');
+
 
 
 #region main code
@@ -41,6 +43,7 @@ class Chat implements MessageComponentInterface {
         $message = json_decode($message);
         $action = $message->action;
         $uid = $message->uid;
+        
                         
         switch($message->action)
         {
@@ -49,16 +52,20 @@ class Chat implements MessageComponentInterface {
             */
             case "connect":
                 
+                
+
                 if(!isset($clients[$uid]))
                 {
                     $clients[$uid]=[];
                 }
 
                 array_push($clients[$uid],$client->resourceId);
+                var_dump($clients);
+                
                 change_user_status('online', $uid);
 
                 /* TEST */ 
-                print_r($clients);
+                var_dump($clients);
 
                 foreach ($this->clients as $client) {
                     
@@ -67,6 +74,34 @@ class Chat implements MessageComponentInterface {
                         $client->send($data);                
                     
                 }
+
+                break;
+
+            case "send_message":
+                $room_id = $message->room_id;
+                $members = get_other_room_member($room_id, $uid);
+                $data = '{"action":"receive_message", "room_id":"'.$room_id.'"}';
+                $all_member_socket = array();
+                foreach($members as $member)
+                {
+                    if(isset($clients[$member])){
+                        $member_sockets = $clients[$member];
+                        foreach($member_sockets  as $socket)
+                        {
+                            foreach($this->clients as $client)
+                            {
+                                if($client->resourceId==$socket)
+                                {$client->send($data);}
+                                
+                                
+                            }
+                        }
+                    }
+                    
+                }
+
+                break;
+
         }
     }
 
@@ -101,11 +136,11 @@ class Chat implements MessageComponentInterface {
                         // The sender is not the receiver, send to each client connected
                        
                         $data = '{"action":"status", "user":"'.$uid.'"}';
-                        $client->send($data);                             }
+                        $client->send($data);}
                 }
 
                 /* TEST */ 
-                print_r($clients);
+                // print_r($clients);
                 break;
             }
 
