@@ -11,7 +11,7 @@ CREATE TABLE `users` (
 
 CREATE TABLE `chatrooms` (
     id int(3) NOT NULL AUTO_INCREMENT,
-    room_id varchar(5),
+    room_id varchar(5) NOT NULL,
     type enum("oneByone", "group") NOT NULL,
     unique(room_id),
     PRIMARY KEY (id)
@@ -19,7 +19,7 @@ CREATE TABLE `chatrooms` (
 
 CREATE TABLE `paticipants` (
     uid int(3) NOT NULL,
-    room_id int(5) NOT NULL
+    room_id varchar(5) NOT NULL
 );
 
 CREATE TABLE `messages` (
