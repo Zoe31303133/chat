@@ -3,11 +3,13 @@
     
     require_once('../asset/setup/DBconnect.php');
 
-    echo( get_contacts());
+    $my_uid = $_GET['my_uid'];
+    echo( get_contacts($my_uid));
 
 
-    function get_contacts(){
-            $sql = "select id, name, status from users;";
+
+    function get_contacts($my_uid){
+            $sql = "select id, name, status from users where id != {$my_uid};";
             $conn = connection();
             $stmt = mysqli_stmt_init($conn);
             mysqli_stmt_prepare($stmt, $sql);
