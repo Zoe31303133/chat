@@ -8,11 +8,11 @@
 
     if(!get_room_id($uid1, $uid2))
     {
-        echo create_room($uid1, $uid2);
+      var_dump(create_room($uid1, $uid2));
     }
     else
     {
-        echo get_room_id($uid1, $uid2);
+      echo(get_room_id($uid1, $uid2));
     }
     
 
@@ -89,24 +89,27 @@
 
         return $result;
     }
+
+
+// 
+// select * from paticipants;
+
+
+// -- create new chatroom (oneByone)
+// 1.  
+//     insert into chatrooms(room_id, type) values ("", "oneByone");
+// 2. 
+//     insert into paticipants(uid, room_id) values (,""), (,"");
+
+
+// -- get oneBtone room_id
+// select t.room_id from 
+// (select c.room_id , uid from paticipants as p join chatrooms as c on p.room_id=c.room_id where type="onebyone" and uid in (1,2) ) as t  
+// group by t.room_id
+// having count(t.room_id)= 2;
+
 ?>
 
 
-<!-- --
-select * from paticipants;
 
-
--- create new chatroom (oneByone)
-1.  
-    insert into chatrooms(room_id, type) values ("", "oneByone");
-2. 
-    insert into paticipants(uid, room_id) values (,""), (,"");
-
-
--- get oneBtone room_id
-select t.room_id from 
-(select c.room_id , uid from paticipants as p join chatrooms as c on p.room_id=c.room_id where type="onebyone" and uid in (1,2) ) as t  
-group by t.room_id
-having count(t.room_id)= 2;
- -->
 
