@@ -1,3 +1,10 @@
+
+let = $my_uid ="";
+if(!($my_uid = sessionStorage.getItem("uid")))
+{
+    window.location.replace("http://localhost:4000/logIn");
+};
+
 // message db example
 const chat_history = [
     ["1", "message"],
@@ -14,9 +21,8 @@ $(document).ready(function(){
 
 //#region main code
 
-    $uid = sessionStorage.getItem("uid");
     var conn = WebSocket;
-    online($uid);
+    online($my_uid);
 
 
     // Initialize
@@ -67,7 +73,7 @@ $(document).ready(function(){
         if(idle_time==6)
         {
 
-            online($uid);
+            online($my_uid);
 
             console.log('更新上線狀態至database');
             listen_idle = setInterval(()=>{
@@ -139,7 +145,7 @@ function fetchMessage(){
 // add "sent" class if it was sent by me
 function isSentByMe(element){
     var result = "";
-    if(element[0]==$uid)
+    if(element[0]==$my_uid)
     {
         result = "sent";
     }
@@ -157,9 +163,11 @@ function make_text_to_DOM(element){
 
 function fetch_contacts_from_DB()
 {   
-    $.get( "chatroom/fetch_contacts_from_DB.php", function(data) {
+    $.get( "chatroom/fetch_contacts_from_DB.php?my_uid="+$my_uid, function(data) {
         var contacts = JSON.parse(data);
+        // TEST
         console.dir(contacts);
+        //
         display_contacts_list(contacts);
   });
 }
@@ -186,16 +194,16 @@ function load_Message_into_chat(){
 
 function send_message(){
     $(".message_area").prepend(`<div class="sent message">
-    <img class="user_img" src="../file/` + $uid + `.jpg" alt="photo">
+    <img class="user_img" src="../file/` + $my_uid + `.jpg" alt="photo">
     <div class="message_text">${$(".message_input_text").val()}</div>
     </div>`);
 }
 
-function online($uid){
+function online($my_uid){
     conn = new WebSocket('ws://localhost:8080');
     conn.onopen = function(e) {
         console.log("Connection established!");
-        conn.send(`{"action":"connect", "uid":"`+ $uid+`"}`);
+        conn.send(`{"action":"connect", "uid":"`+ $my_uid+`"}`);
 
         conn.onmessage = function(e){
 
