@@ -1,4 +1,3 @@
-
 let = $my_uid ="";
 if(!($my_uid = sessionStorage.getItem("uid")))
 {
@@ -8,21 +7,13 @@ if(!($my_uid = sessionStorage.getItem("uid")))
 let session_room_id = sessionStorage.getItem('room_id');
 let conn = new WebSocket('ws://localhost:8080');
 
+
 $(document).ready(function(){
 
 //#region main code
     
     online($my_uid);
     load_room(session_room_id);
-    // Initialize
-
-    $(".contact_list").html("");
-    fetch_contacts_from_DB();
-    
-    // load_contacts();
-    load_Message_into_chat();
-
-
     let time = new Idle_timer();
 
     //idle_timer 測試按鈕 
@@ -31,28 +22,20 @@ $(document).ready(function(){
     $("#act_start").on("click",function(){time.act_listener_open(1);});
     $("#act_close").on("click",function(){time.act_listener_close(1);});
 
-
 //#endregion
 
 
 //#region listener
 
-
-    $("#logOut_btn").on("click", function(e){
-        e.stopPropagation();
-        $.ajax("logOut",{
-            type: "POST",
-            datatype: "json",
-            data: {},
-            success: function(){
-                window.location.replace("http://localhost:4000/logIn");
-            }
-        })
-    })
-
     $("*").on("click", function(e){
         e.stopPropagation();    
     })
+
+    $("#logOut_btn").on("click", function(e){
+        log_out();
+        sessionStorage.clear();
+    })
+
 
     $(".message_area").on("scroll", function(){
         if($(this).prop("scrollHeight")+$(this).scrollTop()-$(this).height()<1)
@@ -147,10 +130,6 @@ class Idle_timer{
         }      
 }
 
-function fetchMessage(){
-    return chat_history.slice().reverse()
-}
-
 // add "sent" class if it was sent by me
 function isSentByMe(element){
     var result = "";
@@ -170,7 +149,7 @@ function create_text_DOM(element){
     </div>`
 }
 
-function fetch_contacts_from_DB()
+function load_contact_list()
 {   
     $.get( "chatroom/fetch_contacts_from_DB.php?my_uid="+$my_uid, function(data) {
         var contacts = JSON.parse(data);
@@ -250,7 +229,6 @@ function send_message(){
 }
 
 function online($my_uid){
-    conn = new WebSocket('ws://localhost:8080');
     conn.onopen = function(e) {
         console.log("Connection established!");
         conn.send(`{"action":"connect", "uid":"`+ $my_uid+`"}`);
@@ -272,6 +250,13 @@ function online($my_uid){
 
 function offline(){
     conn.close();
+}
+
+function log_out(){
+    $.post("logOut")
+    .done(
+        window.location.replace("http://localhost:4000/logIn")
+      )
 }
 
 function clear_html(element_tag)
