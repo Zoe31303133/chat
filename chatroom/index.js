@@ -181,21 +181,45 @@ function fetch_contacts_from_DB()
   });
 }
 
-function display_contacts_list($data){
-    $data.forEach((contact)=>{
-        var id = contact['id'];
-        var name = contact['name'];
-        var status = contact['status']=="offline"?"":"online"
+function display_contacts_list(data){
+    // clear_html(".contact_list");
+    data.forEach((contact_data)=>{
+        var contact_id = contact_data['id'];
+        var name = contact_data['name'];
+        var status = contact_data['status']=="offline"?"":"online"
 
-        $(".contact_list").append(`
-        <div class="contact"  href="${id}">
-            <div> ${name}</div>
-            <div class="status ${status}">  
-        </div>
-    </div>
-        `)
+        var contact = document.createElement('div');
+        contact.innerHTML = `
+        <div class="contact"  href="${contact_id}">
+                <div> ${name}</div>
+                <div class="status ${status}">  
+            </div>
+        </div>`;
+
+        contact.addEventListener('click', ()=>{
+            get_roomID(contact_id);
+        });
+
+
+        var contact_list = document.getElementsByClassName("contact_list");
+        contact_list[0].appendChild(contact);
+    })
+   
+}
+
+
+function get_roomID(opposite_uid){
+
+    $.get("chatroom/room.php?uid1="+$my_uid+"&uid2="+opposite_uid,  function(room_id) {
+    
+        //TODO: get回來的room_id後面會有額外的\n\n\n，暫用trim解決
+
+        room_id = room_id.trim();
+        sessionStorage.setItem("room_id", room_id);
+        load_room(room_id);
     })
 }
+
 
 function load_room(session_room_id){
         
