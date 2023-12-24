@@ -6,6 +6,7 @@ if(!($my_uid = sessionStorage.getItem("uid")))
 
 let session_room_id = sessionStorage.getItem('room_id');
 let conn = new WebSocket('ws://localhost:8080');
+let session_min_message_id ;
 
 
 $(document).ready(function(){
@@ -40,7 +41,16 @@ $(document).ready(function(){
     $(".message_area").on("scroll", function(){
         if($(this).prop("scrollHeight")+$(this).scrollTop()-$(this).height()<1)
         {   
-            load_Message_into_chat();
+            if(session_min_message_id != "end")
+            {
+                load_history(session_room_id, session_min_message_id);
+            }
+            else
+            {
+                //TEST
+                alert("到頂了！");
+            }
+            
         }}
     )
 
@@ -211,12 +221,36 @@ function get_roomID(opposite_uid){
 function load_Message_into_chat(session_room_id){
     $.get("chatroom/fetch_message_from_DB.php", { room_id: session_room_id})
     .done(function( data ) {
+        
         data=JSON.parse(data);
-        data.reverse();
-        data.forEach((element)=>{$(".message_area").append(create_text_DOM(element));} );
-      });
+        
+        session_min_message_id = data['min_message_id'];
+        masseges = data['messages'];
+        masseges.reverse();
+        masseges.forEach((element)=>{$(".message_area").append(create_text_DOM(element));} );
+    });
     
-    // .forEach((element)=>{$(".message_area").append(create_text_DOM(element));})
+    }
+
+function load_history(session_room_id, min_message_id)
+{    $.get("chatroom/fetch_message_from_DB.php", { room_id: session_room_id, min_message_id: min_message_id})
+.done(function( data ) {
+        
+    data=JSON.parse(data);
+    console.log(data);
+    if(!data)
+        {
+            session_min_message_id = "end";
+        }
+        else
+        {
+            session_min_message_id = data['min_message_id'];
+            masseges = data['messages'];
+            masseges.reverse();
+            masseges.forEach((element)=>{$(".message_area").append(create_text_DOM(element));} );
+        }
+   
+});
 }
 
 function send_message(){
