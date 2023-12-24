@@ -256,7 +256,8 @@ function load_history(session_room_id, min_message_id)
 function send_message(){
 
     var text = $(".message_input_text").val();
-    var datetime = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    var tzoffset = (new Date()).getTimezoneOffset() * 60000;
+    var datetime = new Date(Date.now()-tzoffset).toISOString().slice(0, 19).replace('T', ' ');
     var session_room_id = sessionStorage.getItem("room_id"); 
 
     // DOM
