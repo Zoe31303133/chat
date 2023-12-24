@@ -1,8 +1,4 @@
 <?php
-    session_start();
-    
-    require_once('../asset/setup/DBconnect.php');
-
     function get_other_room_member($room_id, $uid){
 
 
@@ -22,5 +18,6 @@
             mysqli_stmt_close($stmt);
             mysqli_close($conn);
 
-            return implode(",", $array);
+            return $array;
     }
+?>
