@@ -212,7 +212,9 @@ function get_roomID(opposite_uid){
         //TODO: get回來的room_id後面會有額外的\n\n\n，暫用trim解決
 
         room_id = room_id.trim();
-        sessionStorage.setItem("room_id", room_id);
+        session_room_id = room_id;
+        sessionStorage.setItem("room_id", session_room_id);
+
         load_room(room_id);
     })
 }
@@ -234,23 +236,22 @@ function load_Message_into_chat(session_room_id){
 
 function load_history(session_room_id, min_message_id)
 {    $.get("chatroom/fetch_message_from_DB.php", { room_id: session_room_id, min_message_id: min_message_id})
-.done(function( data ) {
+        .done(function( data ) {
+            data=JSON.parse(data);
+            console.log(data);
+            if(!data)
+                {
+                    session_min_message_id = "end";
+                }
+                else
+                {
+                    session_min_message_id = data['min_message_id'];
+                    masseges = data['messages'];
+                    masseges.reverse();
+                    masseges.forEach((element)=>{$(".message_area").append(create_text_DOM(element));} );
+                }
         
-    data=JSON.parse(data);
-    console.log(data);
-    if(!data)
-        {
-            session_min_message_id = "end";
-        }
-        else
-        {
-            session_min_message_id = data['min_message_id'];
-            masseges = data['messages'];
-            masseges.reverse();
-            masseges.forEach((element)=>{$(".message_area").append(create_text_DOM(element));} );
-        }
-   
-});
+        });
 }
 
 function send_message(){
