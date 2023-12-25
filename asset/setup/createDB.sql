@@ -3,8 +3,8 @@ CREATE TABLE `users` (
   name varchar(10) NOT NULL,
   password varchar(15) NOT NULL,
   photo varchar(10),
-  datetime datetime,
-  status enum("online","offline") 
+  datetime datetime NOT NULL,
+  status enum("online","offline") NOT NULL DEFAULT "offline"
   PRIMARY KEY (id)
 )
 
