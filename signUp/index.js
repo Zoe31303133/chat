@@ -18,18 +18,27 @@ $(document).ready(function(){
     
        if($isValid==true)
        {
-            $.ajax("signUp/signUp.inc.php",{
-                type: "POST",
-                datatype: "json",
-                data: {
-                    name: $("#name").val(),
-                    password: $("#password").val()
-                },
-                success: function(data){
-                    alert(data);
-                }
-            })    
-        }
+            $.post("signUp/signUp.inc.php",{name: $("#name").val(), password: $("#password").val()})
+                .done(function($data){
+                    
+                    $data = $data.trim();
+
+                    if($data=="success")
+                    {
+                        alert("註冊成功！");
+                        window.location.replace("http://localhost:4000/logIn");
+                    }
+                    else if($data=="user_exist")
+                    {
+                        alert("該使用者名稱已存在");
+                    }
+                    else{
+                        alert("ddd");
+                    }
+            }
+        
+        )
+    }
     }); 
 });
 

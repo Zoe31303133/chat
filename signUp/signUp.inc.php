@@ -6,14 +6,19 @@ if(isset($_POST['name']))
 {
     
     $name = $_POST['name'];
-    user_exist($name);
-    
-    $password = $_POST['password'];
-    $encrypted_password = encrypt($password);
-    addUser($name , $encrypted_password);
-
-
+    if(user_exist($name))
+    { 
+        echo "user_exist"; 
     }
+    else
+    {
+        $password = $_POST['password'];
+        $encrypted_password = encrypt($password);
+        addUser($name , $encrypted_password);
+
+        echo "success";
+    }
+}
 
 //TODO:完成encrypt()
 function user_exist($name){
@@ -30,27 +35,29 @@ function user_exist($name){
     
     if($row['count(name)']==0)
     {
-        echo "註冊成功！";
+        
         return false;
+
     }
     else
     {
-        echo "該使用者名稱已被使用！";
         return true;
     }
 }
 
 function encrypt($password)
 {
-    return "encrypted_password";
+    return "psw";
 }
 
 function addUser($name, $encrypted_password){
-    $sql = "insert into users (name, password) values (?,?);";
+    $create_time = date("Y-m-d H:i:s");
+
+    $sql = "insert into users (name, password, datetime) values (?,?,?);";
     $conn = connection();
     $stmt = mysqli_stmt_init($conn);
     mysqli_stmt_prepare($stmt, $sql);
-    mysqli_stmt_bind_param($stmt, 'ss', $name, $encrypted_password);
+    mysqli_stmt_bind_param($stmt, 'sss', $name, $encrypted_password, $create_time);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
     mysqli_close($conn);
