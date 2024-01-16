@@ -16,7 +16,7 @@
 
     function get_last_message($room_id){
 
-            $sql = "select id, sentbyuid ,text from (select * from messages where room_id = \"{$room_id}\" order by id desc limit 10) as desc_messages order by id ;";
+            $sql = "select id, sentbyuid ,text from (select * from messages where room_id = \"{$room_id}\" order by id desc limit 20) as desc_messages order by id ;";
             $conn = connection();
             $stmt = mysqli_stmt_init($conn);
             mysqli_stmt_prepare($stmt, $sql);
@@ -49,7 +49,7 @@
 
     function get_previous_message($room_id, $min_message_id){
 
-        $sql = "select id, sentbyuid ,text from (select * from messages where room_id = \"{$room_id}\" and id < \"{$min_message_id}\" order by id desc limit 10) as desc_messages order by id ;";
+        $sql = "select id, sentbyuid ,text from (select * from messages where room_id = \"{$room_id}\" and id < \"{$min_message_id}\" order by id desc limit 30) as desc_messages order by id ;";
         $conn = connection();
         $stmt = mysqli_stmt_init($conn);
         mysqli_stmt_prepare($stmt, $sql);
