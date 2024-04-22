@@ -125,6 +125,7 @@ body{
     width: 15%;
     min-width: 10em;
     background-color: rgb(212, 212, 212);
+    overflow: scroll;
 
 }
 
@@ -230,6 +231,7 @@ body{
     padding-inline: 0.5em;
     margin-inline: 10px;
     border-radius: 0.5em;
+    background-color: rgb(132, 132, 132);
 }
 
 .sent{
@@ -237,7 +239,7 @@ body{
 }
 
 .sent .message_text{
-    background-color: rgb(132, 132, 132);
+    background-color:rgb(110, 190, 116);
 }
 
 .message_input{
