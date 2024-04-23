@@ -22,10 +22,11 @@
         $conn = connection();
         $stmt = mysqli_stmt_init($conn);
         $sql = "select t.room_id from 
-        (select c.room_id , uid from paticipants as p join chatrooms as c on p.room_id=c.room_id where type=\"onebyone\" and uid in ($uid1,$uid2) ) as t  
+        (select c.room_id , uid from paticipants as p join chatrooms as c on p.room_id=c.room_id where type=\"onebyone\" and uid in (?, ?) ) as t  
         group by t.room_id
         having count(t.room_id)= 2;";
         mysqli_stmt_prepare($stmt, $sql);
+        mysqli_stmt_bind_param($stmt, 'ss', $uid1,$uid2);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         $row =  mysqli_fetch_assoc($result);
