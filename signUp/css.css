@@ -1,0 +1,81 @@
+html, body{
+    height: 100%;
+    width: 100%;
+}
+#body{
+    display: flex;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+#signUp_form{
+    display: flex;
+    height: auto;
+    width: 20em;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 25px;
+    background-color: rgb(160, 160, 160);
+    border-radius: 2.5em;
+}
+
+
+#form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 18em;
+}
+#edit_photo_wrapper{
+    display: flex;
+    position: relative;
+    width: fit-content;;
+}
+
+#edit_photo{
+    width: 7em;
+    height: 7em;
+    object-fit:cover;
+    border-radius: 50%;
+}
+
+#photo_edit_button{
+    display: flex;
+    position: absolute;
+    height: 30%;
+    width: 30%;
+    top: 70%;
+    left: 80%;
+    background-color: gray;
+    border-radius: 50%;
+    padding: 7.5%;
+    cursor: pointer;
+    
+}
+
+#photo_edit_button:hover{
+    background-color: rgb(182, 182, 182);
+}
+
+#photo_edit_button svg{
+    height: 100%;
+    width: 100%;
+}
+
+
+#upload_photo_wrapper{
+    width: 100%;
+}
+
+.form_input{
+    margin-bottom: 1.5em;
+}
+
+
+
+#send_btn{
+    margin-top: 1em;
+}

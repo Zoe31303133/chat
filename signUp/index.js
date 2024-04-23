@@ -7,7 +7,7 @@
 
 $(document).ready(function(){
     
-    $("#send").on("click", function(e){
+    $("#send_btn").on("click", function(e){
         e.stopPropagation();
  
         $isValid=true;
@@ -40,7 +40,26 @@ $(document).ready(function(){
         )
     }
     }); 
+
+    $("#photo").on("change", function(e){
+        console.log(e.target.files[0]);
+        var reader = new FileReader();
+        reader.onload =function (e) { 
+            $("#edit_photo").attr("src", e.target.result);
+        }
+
+        reader.readAsDataURL(e.target.files[0]);
+    });
+
+    $("#password_again").on("keyup", function(){
+        if($("#password_again").val()!=$("#password").val())
+        {
+
+        }
+    })
 });
+
+
 
 // level 2 function
 function validTest(field){
@@ -103,4 +122,8 @@ function passwordNotMatch(){
 
         return false;
     }
+}
+
+function defaul_pic(){
+    alert(e);
 }
