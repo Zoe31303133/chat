@@ -1,15 +1,12 @@
 <?php
-session_start();
+    session_start();
 
-var_dump($_SESSION);
+    require_once('../asset/setup/DBconnect.php');
+    require_once('../chatroom/change_user_status.php');
 
-require_once('../asset/setup/DBconnect.php');
+    $uid = $_SESSION['uid'];
+    change_user_status("offline", $uid);
 
-require_once('../chatroom/change_user_status.php');
+    session_destroy();
 
-$uid = $_SESSION['uid'];
-
-session_unset();
-
-change_user_status("offline", $uid);
 ?>
