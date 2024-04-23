@@ -6,7 +6,7 @@ require_once('../chatroom/change_user_status.php');
 if(!isset($_POST['uid']))
 { die; }
 
-$uid = (int)$_POST['uid'];
+$uid = $_POST['uid'];
 
 if(!user_exist($uid))
 {
@@ -34,7 +34,7 @@ function user_exist($uid){
     $conn = connection();
     $stmt = mysqli_stmt_init($conn);
     mysqli_stmt_prepare($stmt, $sql);
-    mysqli_stmt_bind_param($stmt, 'i', $uid);
+    mysqli_stmt_bind_param($stmt, 's', $uid);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $row= mysqli_fetch_assoc($result);
@@ -67,7 +67,7 @@ function logIn($uid, $encrypted_password)
     $stmt = mysqli_stmt_init($conn);
     mysqli_stmt_prepare($stmt, $sql);
     //TODO: psw 改成 encrypted_password
-    mysqli_stmt_bind_param($stmt, 'is', $uid, $encrypted_password);
+    mysqli_stmt_bind_param($stmt, 'ss', $uid, $encrypted_password);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $row= mysqli_fetch_assoc($result);
