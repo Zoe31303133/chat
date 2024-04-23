@@ -57,3 +57,14 @@ session_start();
 
 </html>
 
+
+<!-- 
+    
+    TEST
+ 
+    <div>
+        <button id="start">start</button>    
+        <button id="close">close</button>  
+        <button id="act_start">act_start</button>  
+        <button id="act_close">act_close</button>  
+    <div> -->
