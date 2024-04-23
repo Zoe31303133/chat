@@ -6,23 +6,44 @@ require_once('../chatroom/change_user_status.php');
 if(!isset($_POST['uid']))
 { die; }
 
+validate($_POST);
+
 $uid = $_POST['uid'];
-
-if(!user_exist($uid))
-{
-    echo "no_user";
-    die;
-}
-
+user_exist($uid);
 
 $password = $_POST['password'];
 $encrypted_password = encrypt($password);
 
-
 logIn($uid, $encrypted_password);
 
+function validate($logIn_form){
 
-//TODO: 與signUp.inc.php的function重複
+    foreach($logIn_form as $key => $value){
+
+        $value = trim($value);
+
+        switch($key){
+            case "uid":
+                $pattern = "/^[A-Za-z0-9\-\_]{1,25}$/";
+                break;
+
+            case "password":
+                $pattern = "/^[A-Za-z0-9\-\_]{1,50}$/";
+                break;
+        }
+        
+        if(!preg_match($pattern, $value))
+                {
+                    report_format_error($key);
+                }
+    }
+}
+
+function report_format_error($field){
+    header("HTTP/1.0 400 format error ". "(" . $field . ")");
+    die;
+}
+
 function encrypt($password)
 {
     //TODO: 實作加密
@@ -43,13 +64,9 @@ function user_exist($uid){
 
     if($row['count(id)']==0)
     {
-        return false;
+        echo "no_user";
+        die;
     }
-    else
-    {
-        return true;
-    }
-
     
 }
 

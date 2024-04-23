@@ -9,20 +9,21 @@ $(document).ready(function(){
     
     $("#send_btn").on("click", function(e){
         e.stopPropagation();
- 
-        $isValid=true;
 
-        if(validTest("id")==true)
+        var uid_input = $("#id").val().trim();
+        var password_input = $("#password").val().trim();
+
+        if(validTest("id", uid_input)==true)
         {
-            if(validTest("password")==true)
+            if(validTest("password", password_input)==true)
             {
                 $.ajax("logIn/logIn.inc.php",{
                     type: "POST",
                     datatype: "json",
                     data: 
                     {
-                            uid: $("#id").val(),
-                            password: $("#password").val()
+                            uid: uid_input,
+                            password: password_input
                     },
                     success: function(response)
                     {
@@ -35,7 +36,7 @@ $(document).ready(function(){
                                     break;
                                 case "login_success":
                                     alert("登入成功！")
-                                    sessionStorage.setItem("uid", $("#id").val());
+                                    sessionStorage.setItem("uid", uid_input);
                                     window.location.replace("http://localhost:4000/chatroom");
                                     break;
                             }
@@ -47,34 +48,43 @@ $(document).ready(function(){
 });
 
 // level 2 function
-function validTest(field){
+function validTest(field, input){
+    
     switch(field){
+        
         case "id":
-            //TODO:補充驗證機制
-            if(isEmpty("id"))
-            {return false;}
-            console.log("id");
-            return true;
-            //TD
+
+            if(input.length===0)
+            {
+                alert("請輸入ID");
+                return false;
+            }
+
+            var re = new RegExp("^[A-Za-z0-9\-\_]{1,25}$");
+            if(!re.test(input)){
+                alert("ID輸入不符合格式: 大小寫英文字母、數字、底線(_)與橫線(-)")
+                return false
+            }
             break;
 
         case "password":
-            //TODO:補充驗證機制
-            if(isEmpty("password"))
-            {return false;}
-            console.log("password");
+            
+            if(input.length===0)
+            {
+                alert("請輸入密碼");
+                return false;
+            }
+
+            var re = new RegExp("^[A-Za-z0-9\-\_]{1,50}$");
+            if(!re.test(input)){
+                alert("密碼輸入不符合格式: 大小寫英文字母、數字、底線(_)與橫線(-)")
+                return false
+            }
+
             return true;
-            //TD
             break;
     }
+
+    return true;
 }
 
-// level 1 function
-function isEmpty(field){
-    if($("#"+field).val()=="")
-    {
-        alert(field+"空白");
-        return true
-    }
-    return false;
-}
