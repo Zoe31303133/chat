@@ -7,7 +7,7 @@
 
 $(document).ready(function(){
     
-    $("#send").on("click", function(e){
+    $("#send_btn").on("click", function(e){
         e.stopPropagation();
  
         $isValid=true;

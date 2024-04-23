@@ -1,0 +1,43 @@
+html, body{
+    height: 100%;
+    width: 100%;
+}
+#body{
+    display: flex;
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+#logIn_form{
+    display: flex;
+    height: 20em;
+    width: 20em;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 25px;
+    background-color: rgb(160, 160, 160);
+    border-radius: 2.5em;
+}
+
+#form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 15em;
+}
+
+.redirect_link{
+    margin-inline: 1em;
+    color: rgb(231, 231, 231);
+}
+
+.form_input{
+    margin-bottom: 1.5em;
+}
+
+#send_btn{
+    margin-top: 1em;
+}
