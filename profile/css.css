@@ -1,0 +1,75 @@
+#user_info{
+    width: 20em;
+
+}
+
+#user_photo_name_wrapper{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+#userName{
+    width: 50%;
+}
+
+#userName input{
+    font-size: 0.8em;
+    text-align: center;
+}
+
+#edit_photo_wrapper{
+    display: flex;
+    position: relative;
+    width: fit-content;;
+}
+
+#edit_photo{
+    width: 7em;
+    height: 7em;
+    object-fit:cover;
+    border-radius: 50%;
+}
+
+#photo_edit_button{
+    display: flex;
+    position: absolute;
+    height: 30%;
+    width: 30%;
+    top: 70%;
+    left: 80%;
+    background-color: gray;
+    border-radius: 50%;
+    padding: 7.5%;
+    cursor: pointer;
+    
+}
+
+#photo_edit_button:hover{
+    background-color: rgb(182, 182, 182);
+}
+
+#photo_edit_button svg{
+    height: 100%;
+    width: 100%;
+}
+
+#userName{
+    display: flex;
+    position: relative;
+    align-items: center;
+    font-size: 1.5em;
+    margin-block: 0.5em;
+}
+
+#userName svg{
+    position: absolute;
+    margin-inline-start: 0.5em;
+    cursor: pointer;
+    margin-inline-start: 3em;
+}
+
+.control_btn *{
+    display: flex;
+    margin-inline: 1em;
+}
