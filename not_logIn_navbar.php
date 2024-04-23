@@ -1,7 +1,7 @@
-
 <div class="navbar">
-    <div class="navbar_logo btn btn-primary">
-        logo
+    
+    <div>
+        <img src="logo.jpg" class="navbar_logo" alt="x">
     </div>
 
     <div class="navbar_control">
