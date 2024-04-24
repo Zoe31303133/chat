@@ -33,6 +33,7 @@ class Chat implements MessageComponentInterface {
     public function onOpen(ConnectionInterface $conn) {
         // Store the new connection to send messages to later
         $this->clients->attach($conn);
+
     }
 
     public function onMessage(ConnectionInterface $client, $message) {
@@ -51,8 +52,6 @@ class Chat implements MessageComponentInterface {
                 action type : connect
             */
             case "connect":
-                
-                
 
                 if(!isset($clients[$uid]))
                 {
@@ -60,7 +59,7 @@ class Chat implements MessageComponentInterface {
                 }
 
                 array_push($clients[$uid],$client->resourceId);
-                var_dump($clients);
+
                 
                 change_user_status('online', $uid);
 
@@ -124,12 +123,13 @@ class Chat implements MessageComponentInterface {
                 }
             }
 
+            change_user_status('offline', $uid);
             
             if(empty($socket))
             {
                 unset($clients[$uid]);
                 
-                change_user_status('offline', $uid);
+                
 
                 foreach ($this->clients as $client) {
                     if ($conn !== $client) {
@@ -139,14 +139,13 @@ class Chat implements MessageComponentInterface {
                         $client->send($data);}
                 }
 
-                /* TEST */ 
-                // print_r($clients);
                 break;
             }
 
         }
         
         echo "Connection {$conn->resourceId} has disconnected\n";
+
     }
 
     public function onError(ConnectionInterface $conn, \Exception $e) {
