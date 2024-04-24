@@ -13,6 +13,13 @@ html, body{
 #signUp_form{
     display: flex;
     height: auto;
+    flex-direction: column;
+    align-items: center;
+}
+
+#signUp_form_wrapper{
+    display: flex;
+    height: auto;
     width: 20em;
     flex-direction: column;
     justify-content: center;
@@ -21,7 +28,6 @@ html, body{
     background-color: rgb(160, 160, 160);
     border-radius: 2.5em;
 }
-
 
 #form{
     display: flex;
@@ -40,6 +46,7 @@ html, body{
     height: 7em;
     object-fit:cover;
     border-radius: 50%;
+    box-shadow: 0 0 20px -10px;
 }
 
 #photo_edit_button{
@@ -71,6 +78,7 @@ html, body{
 }
 
 .form_input{
+    padding-inline: 10px;
     margin-bottom: 1.5em;
 }
 
