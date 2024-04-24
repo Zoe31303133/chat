@@ -1,6 +1,5 @@
 <?php
     session_start();
-    var_dump($_SESSION);
 ?>
 
 <!DOCTYPE html>
@@ -21,8 +20,8 @@
     
     <div id="body">
         <div id="logIn_form">
-            <input type="text" placeholder="id" id="id" name="id" class="form_input">
-            <input type="text" placeholder="password" id="password" name="password" class="form_input">
+            <input type="text" placeholder="ID" id="id" name="id" class="form_input">
+            <input type="text" placeholder="Password" id="password" name="password" class="form_input">
             <div >
                 <a href="http://localhost:4000/signUp" class="redirect_link">註冊帳號</a>
             </div>
