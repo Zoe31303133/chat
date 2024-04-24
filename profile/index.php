@@ -8,7 +8,7 @@
 <head>
 
     <?php require_once("../asset/include/header.php") ?>
-
+    <script src="chatroom/index.js"></script>
     <script src="profile/index.js"></script>
     <link rel="stylesheet" href="profile/css.css">
 
@@ -25,7 +25,7 @@
         <form id="update_form" action="/profile/update_user_info.inc.php" method="POST" enctype="multipart/form-data">
                 <div id="user_photo_name_wrapper">
                     <div id="edit_photo_wrapper">
-                        <img src="＃" alt="X" id="edit_photo" class="">
+                        <img src="＃" alt="X" id="edit_photo">
                         <div id="photo_edit_button" class="d-none">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-pencil" viewBox="0 0 16 16">
