@@ -1,7 +1,9 @@
 <div class="navbar">
     
     <div>
-        <img src="logo.jpg" class="navbar_logo" alt="x">
+        <a href="http://localhost:4000/chatroom" >
+            <img src="logo.jpg" class="navbar_logo" alt="x">
+        </a>
     </div>
 
     <div class="navbar_control">
