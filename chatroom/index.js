@@ -1,26 +1,86 @@
-if (!($my_uid = sessionStorage.getItem("uid"))) {
+if (!(my_uid = sessionStorage.getItem("uid"))) {
   window.location.replace("http://localhost:4000/logIn");
 }
 
+
 let session_room_id = sessionStorage.getItem("room_id");
-let conn = new WebSocket("ws://localhost:8080");
 let session_min_message_id;
+let conn;
 
 $(document).ready(function () {
-  //#region main code
+//#region main code
+    
+  online(my_uid);
 
-  online($my_uid);
+
+  class Idle_timer {
+    /*
+      duration = -1 means user is active,
+      duration >=0 which is idle duration.
+  
+      when duration reaching the maximum, the timer will report user is offline and stop counting.
+      */
+  
+    constructor(my_uid) {
+      this.duration = 0;
+      this.max_duration = 12;
+      this.my_uid = my_uid;
+      this.timer;
+    }
+  
+    static timer_algorithm(Idle_timer) {
+      if (Idle_timer.duration == -1) {
+        Idle_timer.duration = 0;
+      } else if (Idle_timer.duration == Idle_timer.max_duration) {
+        offline();
+        clearInterval(Idle_timer.timer);
+      } else {
+        Idle_timer.duration++;
+      }
+    }
+  
+    keep_active() {
+      if (this.duration == 12 ) {
+        online(my_uid);
+        this.start();
+      }
+      this.duration = -1;
+      
+    }
+  
+    start() {
+      this.timer = setInterval(Idle_timer.timer_algorithm, 1000, this);
+    }
+  
+    close() {
+      clearInterval(this.timer);
+    }
+  
+    act_listener_open() {
+      var time = this;
+      $(window).on("keydown mousedown mouseover scroll", function () {
+        time.keep_active();
+      });
+    }
+  
+    act_listener_close() {
+      var time = this;
+      $(window).off("keydown mousedown mouseover scroll");
+    }
+  }
+  let time = new Idle_timer(my_uid); 
+  time.start(); 
+  time.act_listener_open();
+
 
   if (session_room_id) {
     load_room(session_room_id);
   }
 
-  let time = new Idle_timer();
+  //#endregion
 
-  $(".navbar_logo").on("click", function(){
-    window.location="http://localhost:4000/chatroom";
-  })
-  
+  //#region listener
+
   $("#sideBar_contact").on("click", function(){
     load_contact_list();
   })
@@ -29,21 +89,16 @@ $(document).ready(function () {
     load_last_message_list();
   })
 
-  $(".my_photo").attr("src", "file/" + $my_uid + ".jpg");
+  $(".my_photo").attr("src", "file/" + my_uid + ".jpg");
+
+  $(".my_photo").on("error", function(e){
+    this.src = "asset/include/default_user.jpg";
+})
 
   $("#sideBar_contact").click();
 
-  //#endregion
-
-  //#region listener
-
   $("#logout_btn").on("click", function (e) {
     log_out();
-  });
-
-
-  $('.navbar_control_user .my_photo').on("click", function (e) {
-    window.location = "http://localhost:4000/profile";
   });
 
   //#endregion
@@ -51,66 +106,12 @@ $(document).ready(function () {
 
 //#region functions
 
-class Idle_timer {
-  /*
-    duration = -1 means user is active,
-    duration >=0 which is idle duration.
 
-    when duration reaching the maximum, the timer will report user is offline and stop counting.
-    */
-
-  constructor() {
-    this.duration = 0;
-    this.max_duration = 15;
-    this.timer;
-  }
-
-  static timer_algorithm(Idle_timer) {
-    if (Idle_timer.duration == -1) {
-      Idle_timer.duration = 0;
-    } else if (Idle_timer.duration == Idle_timer.max_duration) {
-      offline();
-      clearInterval(Idle_timer.timer);
-    } else {
-      Idle_timer.duration++;
-    }
-  }
-
-  keep_active() {
-    if (this.duration == 6) {
-      online(this.uid);
-      console.log("上線");
-    }
-
-    this.duration = -1;
-    // console.log("s");
-  }
-
-  start() {
-    this.timer = setInterval(Idle_timer.timer_algorithm, 1000, this);
-  }
-
-  close() {
-    clearInterval(this.timer);
-  }
-
-  act_listener_open() {
-    var time = this;
-    $(window).on("keydown mousedown mouseover scroll", function () {
-      time.keep_active();
-    });
-  }
-
-  act_listener_close() {
-    var time = this;
-    $(window).off("keydown mousedown mouseover scroll");
-  }
-}
 
 // add "sent" class if it was sent by me
 function isSentByMe(element) {
   var result = "";
-  if (element[0] == $my_uid) {
+  if (element[0] == my_uid) {
     result = "sent";
   }
 
@@ -126,12 +127,9 @@ function create_text_DOM(element) {
 
 function load_contact_list() {
   $.get(
-    "chatroom/fetch_contacts_from_DB.php?my_uid=" + $my_uid,
+    "chatroom/fetch_contacts_from_DB.php?my_uid=" + my_uid,
     function (data) {
       var contacts = JSON.parse(data);
-      // TEST
-      console.dir(contacts);
-      //
       display_contacts_list(contacts);
     }
   );
@@ -139,12 +137,9 @@ function load_contact_list() {
 
 function load_last_message_list() {
   $.get(
-    "chatroom/get_last_messages.php?my_uid=" + $my_uid,
+    "chatroom/get_last_messages.php?my_uid=" + my_uid,
     function (data) {
       var last_messages = JSON.parse(data);
-      // TEST
-      console.dir(last_messages);
-      //
       display_last_messange_list(last_messages);
     }
   );
@@ -263,21 +258,22 @@ function load_room(session_room_id) {
     ) {
       if (session_min_message_id != "end") {
         load_history(session_room_id, session_min_message_id);
-      } else {
-        //TEST
-        alert("到頂了！");
       }
     }
   });
 
   $(".message_input_sendBtn").click(function () {
     send_message();
+    
     $(".message_input_text").val("");
     $(".message_area").scrollTop($(".message_area").prop("scrollHeight"));
+
+    if($(".last_message").length>0){
+      load_last_message_list();
+    }
   });
 
   $(".message_input_text").on("keydown", function (e) {
-    console.log(e);
     if (e.keyCode == "13") {
       $("#message_input_sendBtn").trigger("click");
     }
@@ -286,7 +282,7 @@ function load_room(session_room_id) {
 
 function get_roomID(opposite_uid) {
   $.get(
-    "chatroom/room.php?uid1=" + $my_uid + "&uid2=" + opposite_uid,
+    "chatroom/room.php?uid1=" + my_uid + "&uid2=" + opposite_uid,
     function (room_id) {
       //TODO: get回來的room_id後面會有額外的\n\n\n，暫用trim解決
 
@@ -324,7 +320,6 @@ function load_history(session_room_id, min_message_id) {
     min_message_id: min_message_id,
   }).done(function (data) {
     data = JSON.parse(data);
-    console.log(data);
     if (!data) {
       session_min_message_id = "end";
     } else {
@@ -339,7 +334,12 @@ function load_history(session_room_id, min_message_id) {
 }
 
 function send_message() {
-  var text = $(".message_input_text").val();
+ 
+  var text = $(".message_input_text").val().trim();
+  if(text.length==0)
+    {return false;}
+  
+
   var tzoffset = new Date().getTimezoneOffset() * 60000;
   var datetime = new Date(Date.now() - tzoffset)
     .toISOString()
@@ -351,7 +351,7 @@ function send_message() {
   $(".message_area").prepend(
     `<div class="sent message">
     <img class="user_img" src="../file/` +
-      $my_uid +
+      my_uid +
       `.jpg" alt="photo">
     <div class="message_text">${text}</div>
     </div>`
@@ -361,42 +361,56 @@ function send_message() {
   $(".message_area").scrollTop($(".message_area").prop("scrollHeight"));
 
   //Database
-  $sql = `insert into messages (text, sentbyuid, datetime, room_id) values ("${text}" , "${$my_uid}" , "${datetime}", "${session_room_id}");`;
-  console.log($sql);
-  $.post("chatroom/sendMessage.php", { sql: $sql });
+
+  $.post("chatroom/sendMessage.php", { text: text, sentbyuid: my_uid, room_id: session_room_id});
+  
   conn.send(
     `{"action":"send_message", "uid":"` +
-      $my_uid +
+      my_uid +
       `" , "room_id":"` +
       session_room_id +
       `"}`
   );
 }
 
-function online($my_uid) {
+function online(my_uid) {
+
+  conn = new WebSocket("ws://localhost:8080");
+  
   conn.onopen = function (e) {
-    console.log("Connection established!");
-    conn.send(`{"action":"connect", "uid":"` + $my_uid + `"}`);
-
-    conn.onmessage = function (e) {
-      var data = JSON.parse(e.data);
-      switch (data["action"]) {
-        case "status":
-          //聯絡人清單搜尋id
-          $(".contact_list").html("");
-          load_contact_list();
-          break;
-
-        case "receive_message":
-          var room_id = data["room_id"];
-
-          if ((room_id = sessionStorage.getItem("room_id"))) {
-            load_room(room_id);
-          }
-          break;
-      }
-    };
+    conn.send(`{"action":"connect", "uid":"` + my_uid + `"}`);
   };
+
+  conn.onmessage = function (e) {
+    var data = JSON.parse(e.data);
+    switch (data["action"]) {
+      case "status":
+        //聯絡人清單搜尋id
+        $(".contact_list").html("");
+        load_contact_list();
+        break;
+
+      case "receive_message":
+        var room_id = data["room_id"];
+
+        if ((room_id = sessionStorage.getItem("room_id"))) {
+          load_room(room_id);
+        }
+
+        if($(".last_message").length>0){
+          load_last_message_list();
+        }
+        
+        break;
+    }
+  };
+
+  conn.onclose = function(e){
+
+  }
+
+
+  
 }
 
 function offline() {
@@ -406,7 +420,11 @@ function offline() {
 function log_out() {
   sessionStorage.clear();
   offline();
-  $.post("logOut").done(setTimeout(()=>{window.location.replace("http://localhost:4000/logIn")},0));
+
+  //TODO:解決跳轉會先執行的問題
+  $.post("logOut").done(
+    setTimeout(()=>{window.location.replace("http://localhost:4000/logIn")},1000)
+  );
 }
 
 function clear_html(element_tag) {
