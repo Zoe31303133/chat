@@ -17,28 +17,34 @@ $(document).ready(function(){
         $isValid=validTest("password_again");
     
        if($isValid==true)
-       {
-            $.post("signUp/signUp.inc.php",{name: $("#name").val(), password: $("#password").val()})
-                .done(function($data){
-                    
-                    $data = $data.trim();
+       {   
 
-                    if($data=="success")
+            var form_data = new FormData($("#signUp_form").get(0));
+        console.log(form_data);
+            $.ajax({
+                url: '/signUp/signUp.inc.php',
+                type: "POST",
+                processData: false, //important
+                contentType: false, //important
+                data: form_data,
+                success: function(response){
+
+                    response = response.trim();
+
+                    if(response=="success")
                     {
                         alert("註冊成功！");
                         window.location.replace("http://localhost:4000/logIn");
                     }
-                    else if($data=="user_exist")
+                    else if(response=="user_exist")
                     {
                         alert("該使用者名稱已存在");
                     }
-                    else{
-                        alert("ddd");
-                    }
-            }
+                }})
+
         
-        )
-    }
+        
+        }
     }); 
 
     $("#photo").on("change", function(e){
@@ -51,12 +57,6 @@ $(document).ready(function(){
         reader.readAsDataURL(e.target.files[0]);
     });
 
-    $("#password_again").on("keyup", function(){
-        if($("#password_again").val()!=$("#password").val())
-        {
-
-        }
-    })
 });
 
 
@@ -122,8 +122,4 @@ function passwordNotMatch(){
 
         return false;
     }
-}
-
-function defaul_pic(){
-    alert(e);
 }

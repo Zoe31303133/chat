@@ -17,10 +17,11 @@
 
 
             <div id="body">
+                <div id="signUp_form_wrapper" >
                 <form id="signUp_form" action="/signUp/signUp.inc.php" method="POST" enctype="multipart/form-data">
                     
                     <div id="edit_photo_wrapper" class="form_input">
-                        <img src="file/default.jpg" alt="X" id="edit_photo" class="">
+                        <img src="asset/include/default_user.jpg" alt="X" id="edit_photo" class="">
                         <div id="photo_edit_button">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-pencil" viewBox="0 0 16 16">
@@ -32,13 +33,14 @@
                         </div>
                     </div>
                     <input type="text" placeholder="ID" id="id" name="id" class="form_input">
-                    <input type="text" placeholder="name" id="name" name="name" class="form_input">
-                    <input type="text" placeholder="phone" id="phone" name="phone" class="form_input">
-                    <input type="text" placeholder="email" id="email" name="email" class="form_input">
-                    <input type="text" placeholder="password" id="password" name="password" class="form_input"> 
-                    <input type="text" placeholder="password again" id="password_again" name="password_again" class="form_input">
-                    <button id="send_btn" class="btn btn-secondary" >送出</button>
+                    <input type="text" placeholder="Name" id="name" name="name" class="form_input">
+                    <input type="text" placeholder="Phone" id="phone" name="phone" class="form_input">
+                    <input type="text" placeholder="Email" id="email" name="email" class="form_input">
+                    <input type="text" placeholder="Password" id="password" name="password" class="form_input"> 
+                    <input type="text" placeholder="Password again" id="password_again" name="password_again" class="form_input">
                 </form>
+                <button id="send_btn" class="btn btn-secondary" >送出</button>
+                </div>
             </div>
 
             
