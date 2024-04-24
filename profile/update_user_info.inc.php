@@ -15,7 +15,6 @@
         die;
     }
 
-    echo($_FILES);
         
     valiadate($_POST);
 
@@ -45,7 +44,7 @@
 
             switch($key){
                 case "name":
-                    $pattern = "/^[A-Za-z0-9\-\_]+$/";
+                    $pattern = "/^[A-Za-z0-9\-\_]{1,10}$/";
                     $length = 10;
                     break;
 
