@@ -123,13 +123,13 @@ class Chat implements MessageComponentInterface {
                 }
             }
 
-            change_user_status('offline', $uid);
+            
             
             if(empty($socket))
             {
                 unset($clients[$uid]);
                 
-                
+                change_user_status('offline', $uid);
 
                 foreach ($this->clients as $client) {
                     if ($conn !== $client) {
