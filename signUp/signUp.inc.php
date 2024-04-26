@@ -2,31 +2,30 @@
 
 require_once('../asset/setup/DBconnect.php');
 ini_set("file_uploads", "On" );
-echo sys_get_temp_dir();
 
 if(isset($_POST['id']))
 {
-    
-    $id = $_POST['id'];
-    if(user_exist($id))
+    $new_userId  = $_POST['id'];
+    if(user_exist($new_userId))
     { 
-        echo "user_exist"; 
+        echo("user_exist");
+        die;
     }
     else
-    {
-        var_dump($_POST);
+    { 
         $name = $_POST['name'];
+        $phone = $_POST['phone'];
+        $email = $_POST['email'];
         $password = $_POST['password'];
-        $encrypted_password = encrypt($password);
-        $new_userId = addUser($id , $name, $encrypted_password);
-        echo "success";
+
+        $encrypted_password = password_hash($password, PASSWORD_DEFAULT);
     }
 
  
     $target_dir = "../file/";
     $file_extension = pathinfo($_FILES["fileToUpload"]["name"], PATHINFO_EXTENSION);
-    $target_file = $target_dir . $new_userId. "." .$file_extension;
-    echo $target_file;
+    $target_file = $target_dir . $new_userId. ".jpg" ;
+
     $uploadOk = 1;
     $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
     
@@ -34,47 +33,48 @@ if(isset($_POST['id']))
     if(isset($_POST["submit"])) {
     $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
     if($check !== false) {
-        echo "File is an image - " . $check["mime"] . ".";
         $uploadOk = 1;
     } else {
-        echo "File is not an image.";
+        echo "format_error";
         $uploadOk = 0;
     }
     }
 
     // Check if file already exists
     if (file_exists($target_file)) {
-    echo "Sorry, file already exists.";
-    $uploadOk = 0;
+        unlink($target_file);
     }
 
     // Check file size
     if ($_FILES["fileToUpload"]["size"] > 500000) {
-    echo "Sorry, your file is too large.";
+    echo "size_too_large";
     $uploadOk = 0;
     }
 
     // Allow certain file formats
     if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
     && $imageFileType != "gif" ) {
-    echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+    echo "format_error";
     $uploadOk = 0;
     }
 
     // Check if $uploadOk is set to 0 by an error
     if ($uploadOk == 0) {
-    echo "Sorry, your file was not uploaded.";
+    echo "upload_error";
     // if everything is ok, try to upload file
     } else {
-    if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-        echo "The file ". htmlspecialchars( basename( $_FILES["fileToUpload"]["name"])). " has been uploaded.";
-    } else {
-        echo "Sorry, there was an error uploading your file.";
+    if (
+        
+        move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+        addUser($new_userId , $name, $phone, $email, $encrypted_password);
+        echo "success";
+        
+        } else {
+        echo "upload_error";
     }
     }
 }
 
-//TODO:完成encrypt()
 function user_exist($id){
     $sql = "select count(id) from users where id = ?";
     $conn = connection();
@@ -89,9 +89,7 @@ function user_exist($id){
     
     if($row['count(id)']==0)
     {
-        
         return false;
-
     }
     else
     {
@@ -99,12 +97,51 @@ function user_exist($id){
     }
 }
 
-function encrypt($password)
-{
-    return "psw";
+function report_format_error($field){
+    header("HTTP/1.0 400 format error ". "(" . $field . ")");
+    die;
 }
 
-function addUser($id, $name, $encrypted_password){
+function valiadate($update_form){
+
+    foreach($update_form as $key => $value){
+
+        if($key=="uid"||$key=="photo"||$key=="csrf_token")
+        {continue ;}
+
+        $value = trim($value);
+
+        switch($key){
+
+            case "id":
+                $pattern = "/^[A-Za-z0-9\-\_]{1,25}$/";
+                $length = 25;
+                break;
+
+            case "name":
+                $pattern = "/^[A-Za-z0-9\-\_]{1,10}$/";
+                $length = 10;
+                break;
+
+            case "phone":
+                $pattern = "/^09[0-9]{8}$/";
+                $length = 10;
+                break;
+
+            case "email":
+                $pattern = "/^[a-zA-z0-9_]+@[a-zA-z0-9]+\.[a-zA-z0-9]+$/";
+                $length = 50;
+                break;
+        }
+        
+        if(!preg_match($pattern, $value)||strlen($value)>$length)
+                {
+                    report_format_error($key);
+                }
+    }
+}
+
+function addUser($id, $name, $phone, $email, $encrypted_password){
     $create_time = date("Y-m-d H:i:s");
 
     $conn = connection();
@@ -113,15 +150,14 @@ function addUser($id, $name, $encrypted_password){
     
     $stmt = mysqli_stmt_init($conn);
     
-    $sql = "insert into users (id, name, password, datetime) values (?,?,?,?);";
+    $sql = "insert into users (id, name, phone, email, password, datetime) values (?,?,?,?,?,?);";
     mysqli_stmt_prepare($stmt, $sql);
-    mysqli_stmt_bind_param($stmt, 'ssss', $id, $name, $encrypted_password, $create_time);
+    mysqli_stmt_bind_param($stmt, 'ssssss', $id, $name, $phone, $email,$encrypted_password, $create_time);
     mysqli_stmt_execute($stmt);
 
     mysqli_stmt_close($stmt);
     mysqli_commit($conn);
     mysqli_close($conn);
-    
 }
 ?>
 

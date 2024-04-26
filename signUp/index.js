@@ -1,50 +1,69 @@
-/*input field:
-1. photo
-2. name
-3. password
-4. password_again
-*/
 
 $(document).ready(function(){
     
     $("#send_btn").on("click", function(e){
-        e.stopPropagation();
- 
-        $isValid=true;
-        
-        $isValid=validTest("name");
-        $isValid=validTest("password");
-        $isValid=validTest("password_again");
-    
-       if($isValid==true)
-       {   
 
-            var form_data = new FormData($("#signUp_form").get(0));
-        console.log(form_data);
-            $.ajax({
-                url: '/signUp/signUp.inc.php',
-                type: "POST",
-                processData: false, //important
-                contentType: false, //important
-                data: form_data,
-                success: function(response){
+        var form_data = new FormData($("#signUp_form").get(0));
 
-                    response = response.trim();
+        var id = form_data.get('id');
+        if(!validTest("id",id)) return false;
 
-                    if(response=="success")
-                    {
+        var name = form_data.get('name');    
+        if(!validTest("name",name)) return false;
+
+        var phone = form_data.get('phone');
+        if(!validTest("phone",phone)) return false;
+
+        var email = form_data.get('email');
+        if(!validTest("email",email)) return false;
+
+        var password = form_data.get('password');
+        if(!validTest("password",password)) return false;
+
+        if(passwordNotMatch())
+        {
+            alert("兩次密碼輸入不相符");
+            
+            return false;
+        }
+
+
+        $.ajax({
+            url: '/signUp/signUp.inc.php',
+            type: "POST",
+            processData: false, //important
+            contentType: false, //important
+            data: form_data,
+            success: function(response){
+
+                response = response.trim();
+
+                switch(response)
+                {
+                    case "success":
                         alert("註冊成功！");
                         window.location.replace("http://localhost:4000/logIn");
-                    }
-                    else if(response=="user_exist")
-                    {
+                        break;
+                    
+                    case "user_exist":
                         alert("該使用者名稱已存在");
-                    }
-                }})
+                        break;
 
-        
-        
-        }
+                    case "format_error":
+                        alert("圖檔格式錯誤");
+                        break;
+
+                    case "size_too_large":
+                        alert("圖檔過大");
+                        break;
+                        
+                    case "upload_error":
+                        alert("圖檔上傳時發生錯誤")
+                        break;
+            }}
+        })
+
+       
     }); 
 
     $("#photo").on("change", function(e){
@@ -60,66 +79,121 @@ $(document).ready(function(){
 });
 
 
-
 // level 2 function
-function validTest(field){
+function validTest(field, value){
     switch(field){
         case "photo":
             //TODO:補充驗證機制
-            console.log("photo");
-            //TD
             break;
 
+        case "id":
+            if(isEmpty(value))
+            {
+                alert("請輸入ID");
+                return false;
+            }
+
+            var regex = new RegExp("^[A-Za-z0-9\-\_]{1,25}$")
+                  
+            if(!regex.test(value))
+            {
+                alert("ID不符格式");
+                return false;
+            }
+            
+            return true;
+
         case "name":
-            //TODO:補充驗證機制
-            if(isEmpty("name"))
-            {return false;}
-            console.log("name");
+            if(isEmpty(value))
+            {
+                alert("請輸入姓名");
+                return false;
+            }
+
+            var regex = new RegExp("^[A-Za-z0-9\-\_]{1,10}")
+            regex.test(value);
+                        
+            if(!regex.test(value))
+            {
+                alert("名稱不符格式");
+                return false;
+            }
+            
+            return true;
+
+        case "phone":
+            if(isEmpty(value))
+            {
+                alert("請輸入電話");
+                return false;
+            }
+
+            var regex = new RegExp("^09[0-9]{8}$")
+            
+            if(!regex.test(value))
+            {
+                alert("電話不符格式");
+
+                return false;
+            }
+            
+
+            return true;
+
+
+        case "email":
+            if(isEmpty(value))
+            {
+                alert("請輸入電子信箱");
+                return false;
+            }
+
+            var regex = new RegExp("^[a-zA-z0-9_]+@[a-zA-z0-9]+\.[a-zA-z0-9]+$")
+            
+            if(!regex.test(value)||value.length>50)
+            {
+                alert("信箱不符格式");
+                return false;
+            }
+            
             return true;
             //TD
             break;
 
         case "password":
-            //TODO:補充驗證機制
-            if(isEmpty("password"))
-            {return false;}
-            console.log("password");
-            return true;
-            //TD
-            break;
+            if(isEmpty(value))
+            {
+                alert("請設定密碼");
+                return false;
+            }
 
-        case "password_again":
-            //TODO:補充驗證機制
-            if(isEmpty("password_again")||passwordNotMatch())
-            {return false;}
-            console.log("password_again");
+            var regex = new RegExp("^[A-Za-z0-9\-\_]{1,50}$");
+
+            if(!regex.test(value))
+            {
+                alert("密碼不符格式");
+                return false;
+            }
             return true;
-            //TD
-            break;
+
     }
 }
 
 
 // level 1 function
-function isEmpty(field){
+function isEmpty(value){
 
-    if($("#"+field).val()=="")
-    {
-        alert(field+"空白");
-        return true
-    }
-    return false;
+    value = value.trim();
+    return value.length===0;
 }
 
 function passwordNotMatch(){
     if($("#password").val()!=$("#password_again").val())
     {
-        alert("password not match");
         return true;
     }
     else
     {
-
         return false;
     }
 }
