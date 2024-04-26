@@ -184,6 +184,10 @@ function display_contacts_list(data) {
 
     $(".contact_list").append(contact);
 
+    $(".contact_list img").on("error", function(e){
+      this.src = "asset/include/default_user.jpg";
+  })
+
   });
 
   
@@ -219,10 +223,12 @@ function display_last_messange_list(data){
         sessionStorage.setItem("room_id", room_id);
         load_room(room_id);
     });
-    $(".contact_list img").on("error", function(e){
-        this.src = "asset/include/default_user.jpg";
-    })
+
     $(".contact_list").append(last_message_DOM);
+
+    $(".contact_list img").on("error", function(e){
+      this.src = "asset/include/default_user.jpg";
+  })
   });
 }
 
