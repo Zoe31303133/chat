@@ -69,6 +69,8 @@ $(window).on("load", function(){
 
 
         var form_data = new FormData($("#update_form").get(0));
+        form_data.append("uid", my_uid);
+
 
         $.ajax({
             url: '/profile/update_user_info.inc.php',
