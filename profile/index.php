@@ -1,5 +1,6 @@
 <?php
     session_start();
+    require_once("../csrf_token.php");
 ?>
 
 <!DOCTYPE html>
@@ -23,6 +24,7 @@
     <div id="body" class="d-flex justify-content-center p-5">
         <div id="user_info">
         <form id="update_form" action="/profile/update_user_info.inc.php" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?php echo($_SESSION['csrf_token']) ?>">
                 <div id="user_photo_name_wrapper">
                     <div id="edit_photo_wrapper">
                         <img src="＃" alt="X" id="edit_photo">

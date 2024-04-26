@@ -1,7 +1,13 @@
 <?php
 
+    // TODO: 驗證資料是否，節省DB資源消耗
+
     session_start();    
     require_once("../asset/setup/DBconnect.php");
+
+
+    $client_csrf_token = $_POST["csrf_token"];
+    require_once("../csrf_validate.php");
 
     if($_POST["uid"]!=$_SESSION["uid"])
     {
@@ -37,7 +43,7 @@
 
         foreach($update_form as $key => $value){
 
-            if($key=="uid"||$key=="photo")
+            if($key=="uid"||$key=="photo"||$key=="csrf_token")
             {continue ;}
 
             $value = trim($value);
@@ -66,8 +72,6 @@
         }
 
     }
-
-
 
     function update_user_info($object){
 
