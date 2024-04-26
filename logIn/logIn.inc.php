@@ -12,9 +12,8 @@ $uid = $_POST['uid'];
 user_exist($uid);
 
 $password = $_POST['password'];
-$encrypted_password = encrypt($password);
 
-logIn($uid, $encrypted_password);
+logIn($uid, $password);
 
 function validate($logIn_form){
 
@@ -75,16 +74,16 @@ function setSession($uid)
     $_SESSION['uid']=$uid;
 }
 
-function logIn($uid, $encrypted_password)
+function logIn($uid, $password)
 {
     //TODO: psw 改成 encrypted_password
-    $sql = "select count(id) from users where id = ? and password = ?;";
+    $sql = "select password from users where id = ?;";
 
     $conn = connection();
     $stmt = mysqli_stmt_init($conn);
     mysqli_stmt_prepare($stmt, $sql);
     //TODO: psw 改成 encrypted_password
-    mysqli_stmt_bind_param($stmt, 'ss', $uid, $encrypted_password);
+    mysqli_stmt_bind_param($stmt, 's', $uid);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $row= mysqli_fetch_assoc($result);
@@ -92,16 +91,15 @@ function logIn($uid, $encrypted_password)
     mysqli_close($conn);
     
 
-    if($row['count(id)']==0)
-    {
-        echo "wrong_password";
-    }
-    else
+    if(password_verify($password,$row['password']))
     {
         echo "login_success";
         setSession($uid);
         change_user_status('online', $uid);
-        
+    }
+    else
+    {  
+        echo "wrong_password";
     }
 }
 
