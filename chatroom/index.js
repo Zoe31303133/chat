@@ -82,16 +82,18 @@ $(document).ready(function () {
   //#region listener
 
   $("#sideBar_contact").on("click", function(){
+    $(".contact_list").attr("class", "contact_list users");
     load_contact_list();
   })
 
   $("#sideBar_message").on("click", function(){
+    $(".contact_list").attr("class", "contact_list last_message_list")
     load_last_message_list();
   })
 
   $(".my_photo").attr("src", "file/" + my_uid + ".jpg");
 
-  $(".my_photo").on("error", function(e){
+  $(".user_img").on("error", function(e){
     this.src = "asset/include/default_user.jpg";
 })
 
@@ -152,25 +154,26 @@ function display_contacts_list(data) {
   $(".contact_list").html("");
 
   data.forEach((contact_data) => {
+
     var contact_id = contact_data["id"];
     var name = contact_data["name"];
     var status =
-      contact_data["status"] == "offline"
-        ? ""
-        : `<div class="onlie_green_dot"></div>`;
+      contact_data["status"] == "offline" ? "": `<div class="onlie_green_dot"></div>`;
+
+
 
     var contact = document.createElement("div");
     contact.innerHTML = `
-        <div class="contact">
-                <div class="position-relative mx-2">
-                <img src="file/${contact_id}.jpg" alt="X" class="user_img">
-                ${status}
-                </div>
-                <div>
-                    <span class="chat_name">${contact_id}</span>
-                    <span class="chat_last_message"></span>
-                </div>
-            </div>
+          <div class="contact">
+              <div class="position-relative mx-2">
+              <img src="file/${contact_id}.jpg" alt="X" class="user_img">
+              ${status}
+              </div>
+              <div>
+                  <span class="chat_name">${contact_id}</span>
+                  <span class="chat_last_message"></span>
+              </div>
+          </div>
         `;
 
     contact.addEventListener("click", () => {
@@ -178,11 +181,16 @@ function display_contacts_list(data) {
       sessionStorage.setItem("current_room_photo_id", contact_id);
       sessionStorage.setItem("current_room_photo_name", contact_id);
     });
+
     $(".contact_list").append(contact);
+
   });
+
+  
 }
 
 function display_last_messange_list(data){
+
   $(".contact_list").html("");
   data.forEach((last_messages) => {
     var uid = last_messages["uid"];
@@ -211,7 +219,9 @@ function display_last_messange_list(data){
         sessionStorage.setItem("room_id", room_id);
         load_room(room_id);
     });
-
+    $(".contact_list img").on("error", function(e){
+        this.src = "asset/include/default_user.jpg";
+    })
     $(".contact_list").append(last_message_DOM);
   });
 }
@@ -247,6 +257,10 @@ function load_room(session_room_id) {
   if (!session_room_id) {
     return false;
   }
+
+  $(".room_photo").on("error", function(e){
+      this.src = "asset/include/default_user.jpg";
+  })
 
   clear_html(".message_area");
   load_Message_into_chat(session_room_id);
@@ -311,6 +325,10 @@ function load_Message_into_chat(session_room_id) {
     masseges.forEach((DB_msg) => {
       $(".message_area").append(create_text_DOM(DB_msg));
     });
+
+    $(".message_area .user_img").on("error", function(e){
+        this.src = "asset/include/default_user.jpg";
+    })
   });
 }
 
@@ -386,8 +404,10 @@ function online(my_uid) {
     switch (data["action"]) {
       case "status":
         //聯絡人清單搜尋id
-        $(".contact_list").html("");
-        load_contact_list();
+        if($(".users").length>0){
+          $(".contact_list").html("");
+          load_contact_list();
+        }
         break;
 
       case "receive_message":
@@ -397,7 +417,7 @@ function online(my_uid) {
           load_room(room_id);
         }
 
-        if($(".last_message").length>0){
+        if($(".last_message_list").length>0){
           load_last_message_list();
         }
         
