@@ -8,7 +8,7 @@
 
     if(!get_room_id($uid1, $uid2))
     {
-      var_dump(create_room($uid1, $uid2));
+      echo(create_room($uid1, $uid2));
     }
     else
     {
@@ -78,7 +78,6 @@
 
     function randStr(){
 
-        $result ="";
         $code = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         $len = rand(1,5);
         
