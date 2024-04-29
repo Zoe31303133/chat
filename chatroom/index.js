@@ -91,7 +91,7 @@ $(document).ready(function () {
     load_last_message_list();
   })
 
-  $(".my_photo").attr("src", "file/" + my_uid + ".jpg");
+  $(".my_photo").attr("src", "file/" + my_uid);
 
   $(".user_img").on("error", function(e){
     this.src = "asset/include/default_user.jpg";
@@ -122,7 +122,7 @@ function isSentByMe(element) {
 
 function create_text_DOM(element) {
   return `<div class="${isSentByMe(element)} message">
-    <img class="user_img" src="../file/${element[0]}.jpg" alt="photo">
+    <img class="user_img" src="../file/${element[0]}" alt="photo">
     <div class="message_text">${element[1]}</div>
     </div>`;
 }
@@ -166,7 +166,7 @@ function display_contacts_list(data) {
     contact.innerHTML = `
           <div class="contact">
               <div class="position-relative mx-2">
-              <img src="file/${contact_id}.jpg" alt="X" class="user_img">
+              <img src="file/${contact_id}" alt="X" class="user_img">
               ${status}
               </div>
               <div>
@@ -207,7 +207,7 @@ function display_last_messange_list(data){
     last_message_DOM.innerHTML = `
         <div class="last_message">
                 
-                <img src="file/${photo}.jpg" alt="X" class="user_img">
+                <img src="file/${photo}" alt="X" class="user_img">
                
                 <div>
                     <span class="last_message_name">${uid}</span>
@@ -239,7 +239,7 @@ function load_room(session_room_id) {
   var chat_html = `<div class="chat_header">
                       <div class="chat_header_chat_name">
                           <div  class="position-relative">
-                              <img src="file/${opposite_uid}.jpg" alt="X" class="room_photo user_img">
+                              <img src="file/${opposite_uid}" alt="X" class="room_photo user_img">
                           </div>
                           <span>${name}</span>
                       </div>
@@ -374,9 +374,7 @@ function send_message() {
   // DOM
   $(".message_area").prepend(
     `<div class="sent message">
-    <img class="user_img" src="../file/` +
-      my_uid +
-      `.jpg" alt="photo">
+    <img class="user_img" src="../file/${my_uid} alt="photo">
     <div class="message_text">${text}</div>
     </div>`
   );

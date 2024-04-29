@@ -126,8 +126,7 @@
         }
 
         // Allow certain file formats
-        if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-        && $imageFileType != "gif" ) {
+        if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
         echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
         $uploadOk = 0;
         }
@@ -139,7 +138,7 @@
         } else {
         if (move_uploaded_file($_FILES["photo"]["tmp_name"], $target_file)) {
 
-            rename($target_file, str_replace($file_extension, "jpg", $target_file));
+            // rename($target_file, str_replace($file_extension, "", $target_file));
 
             echo "The file ". htmlspecialchars( basename( $_FILES["fileToUpload"]["name"])). " has been uploaded.";
         } else {

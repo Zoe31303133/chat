@@ -27,41 +27,21 @@ $(document).ready(function(){
             return false;
         }
 
-
         $.ajax({
             url: '/signUp/signUp.inc.php',
             type: "POST",
             processData: false, //important
             contentType: false, //important
             data: form_data,
-            success: function(response){
+            success: function(){
 
-                response = response.trim();
-
-                switch(response)
-                {
-                    case "success":
-                        alert("註冊成功！");
-                        window.location.replace("http://localhost:4000/logIn");
-                        break;
-                    
-                    case "user_exist":
-                        alert("該使用者名稱已存在");
-                        break;
-
-                    case "format_error":
-                        alert("圖檔格式錯誤");
-                        break;
-
-                    case "size_too_large":
-                        alert("圖檔過大");
-                        break;
-                        
-                    case "upload_error":
-                        alert("圖檔上傳時發生錯誤")
-                        break;
-            }}
-        })
+                alert("註冊成功");
+                window.location.replace("http://localhost:4000/logIn");
+            },
+            error: function(response){
+                alert(response.responseJSON.message);
+            }
+    })
 
        
     }); 

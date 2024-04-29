@@ -11,7 +11,7 @@ $(window).on("load", function(){
         $("#inputPhone").val($user_info['phone']);
 
         $my_uid = sessionStorage.getItem("uid");
-        $(".my_photo, #edit_photo").attr("src", "file/" + $my_uid + ".jpg");
+        $(".my_photo, #edit_photo").attr("src", "file/" + $my_uid);
     }
     )
     
