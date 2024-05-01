@@ -1,6 +1,6 @@
 <?php
     session_start();
-?>
+    ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -16,7 +16,7 @@
 </head>
 
 <body>
-    <?php require_once("../not_logIn_navbar.php"); ?>
+    <?php require_once("../asset/include/not_logIn_navbar.php"); ?>
     
     <div id="body">
         <div id="logIn_form">

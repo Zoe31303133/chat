@@ -19,7 +19,7 @@
 
 <body>
 
-    <?php require_once("../logIn_navbar.php"); ?>
+    <?php require_once("../asset/include/logIn_navbar.php"); ?>
 
     <div id="body" class="d-flex justify-content-center p-5">
         <div id="user_info">

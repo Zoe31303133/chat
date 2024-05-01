@@ -2,7 +2,7 @@
     
     <div>
         <a href="http://localhost:4000/chatroom" >
-            <img src="logo.jpg" class="navbar_logo" alt="x">
+            <img src="/asset/include/logo.jpg" class="navbar_logo" alt="x">
         </a>
     </div>
 

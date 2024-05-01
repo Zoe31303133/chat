@@ -16,7 +16,7 @@ session_start();
 
 <body>
 
-    <?php require_once("../logIn_navbar.php"); ?>
+    <?php require_once("../asset/include/logIn_navbar.php"); ?>
 
     <div class="body">
 
