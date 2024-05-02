@@ -18,7 +18,7 @@
 
             <div id="body">
                 <div id="signUp_form_wrapper" >
-                <form id="signUp_form" action="/signUp/signUp.inc.php" method="POST" enctype="multipart/form-data">
+                <form id="signUp_form" action="/chat/signUp/signUp.inc.php" method="POST" enctype="multipart/form-data">
                     
                     <div id="edit_photo_wrapper" class="form_input">
                         <img src="asset/include/default_user.jpg" alt="X" id="edit_photo" class="">

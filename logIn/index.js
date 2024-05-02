@@ -17,7 +17,7 @@ $(document).ready(function(){
         {
             if(validTest("password", password_input)==true)
             {
-                $.ajax("logIn/logIn.inc.php",{
+                $.ajax("/chat/logIn/logIn.inc.php",{
                     type: "POST",
                     datatype: "json",
                     data: 
@@ -37,7 +37,7 @@ $(document).ready(function(){
                                 case "login_success":
                                     alert("登入成功！")
                                     sessionStorage.setItem("uid", uid_input);
-                                    window.location.replace("http://localhost:4000/chatroom");
+                                    window.location.replace("/chat/chatroom");
                                     break;
                             }
                     }

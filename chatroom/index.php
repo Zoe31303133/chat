@@ -9,7 +9,7 @@ session_start();
 <head>
 
     <?php require_once("../asset/include/header.php") ?>    
-    <script src="chatroom/index.js"></script>
+    <script src="/chat/chatroom/index.js"></script>
     <title>CHAT ROOM</title>
     
 </head>

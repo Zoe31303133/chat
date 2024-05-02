@@ -28,7 +28,7 @@ $(document).ready(function(){
         }
 
         $.ajax({
-            url: '/signUp/signUp.inc.php',
+            url: '/chat/signUp/signUp.inc.php',
             type: "POST",
             processData: false, //important
             contentType: false, //important
@@ -36,7 +36,7 @@ $(document).ready(function(){
             success: function(){
 
                 alert("註冊成功");
-                window.location.replace("http://localhost:4000/logIn");
+                window.location.replace("/chat/logIn");
             },
             error: function(response){
                 alert(response.responseJSON.message);

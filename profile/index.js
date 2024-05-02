@@ -73,7 +73,7 @@ $(window).on("load", function(){
 
 
         $.ajax({
-            url: '/profile/update_user_info.inc.php',
+            url: '/chat/profile/update_user_info.inc.php',
             type: "POST",
             processData: false, //important
             contentType: false, //important
