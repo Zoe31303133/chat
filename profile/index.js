@@ -46,7 +46,7 @@ $(window).on("load", function(){
     })
 
     $("#edit_photo").on("error", function(e){
-        this.src = "asset/include/default_user.jpg";
+        this.src = "/chat/asset/include/default_user.jpg";
     })
 
     // sumit edit
