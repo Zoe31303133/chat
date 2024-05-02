@@ -2,7 +2,7 @@ $(window).on("load", function(){
 
     // loading current user info
 
-    $.get("/profile/get_user_info.inc.php").done((response)=>{
+    $.get("/chat/profile/get_user_info.inc.php").done((response)=>{
 
         $user_info = JSON.parse(response);
         

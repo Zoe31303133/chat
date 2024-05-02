@@ -129,7 +129,7 @@ function create_text_DOM(element) {
 
 function load_contact_list() {
   $.get(
-    "chatroom/fetch_contacts_from_DB.php?my_uid=" + my_uid,
+    "/chat/chatroom/fetch_contacts_from_DB.php?my_uid=" + my_uid,
     function (data) {
       var contacts = JSON.parse(data);
       display_contacts_list(contacts);
@@ -139,7 +139,7 @@ function load_contact_list() {
 
 function load_last_message_list() {
   $.get(
-    "chatroom/get_last_messages.php?my_uid=" + my_uid,
+    "/chat/chatroom/get_last_messages.php?my_uid=" + my_uid,
     function (data) {
       var last_messages = JSON.parse(data);
       display_last_messange_list(last_messages);
@@ -302,7 +302,7 @@ function load_room(session_room_id) {
 
 function get_roomID(opposite_uid) {
   $.get(
-    "chatroom/room.php?uid1=" + my_uid + "&uid2=" + opposite_uid,
+    "/chat/chatroom/room.php?uid1=" + my_uid + "&uid2=" + opposite_uid,
     function (room_id) {
       //TODO: get回來的room_id後面會有額外的\n\n\n，暫用trim解決
 
@@ -316,7 +316,7 @@ function get_roomID(opposite_uid) {
 }
 
 function load_Message_into_chat(session_room_id) {
-  $.get("chatroom/fetch_message_from_DB.php", {
+  $.get("/chat/chatroom/fetch_message_from_DB.php", {
     room_id: session_room_id,
   }).done(function (data) {
     data = JSON.parse(data);
@@ -339,7 +339,7 @@ function load_Message_into_chat(session_room_id) {
 }
 
 function load_history(session_room_id, min_message_id) {
-  $.get("chatroom/fetch_message_from_DB.php", {
+  $.get("/chat/chatroom/fetch_message_from_DB.php", {
     room_id: session_room_id,
     min_message_id: min_message_id,
   }).done(function (data) {
@@ -384,7 +384,7 @@ function send_message() {
 
   //Database
 
-  $.post("chatroom/sendMessage.php", { text: text, sentbyuid: my_uid, room_id: session_room_id});
+  $.post("/chat/chatroom/sendMessage.php", { text: text, sentbyuid: my_uid, room_id: session_room_id});
   
   conn.send(
     `{"action":"send_message", "uid":"` +
@@ -446,7 +446,7 @@ function log_out() {
   offline();
 
   //TODO:解決跳轉會先執行的問題
-  $.post("logOut").done(
+  $.post("/chat/logOut").done(
     setTimeout(()=>{window.location.replace("/chat/logIn")},1000)
   );
 }
