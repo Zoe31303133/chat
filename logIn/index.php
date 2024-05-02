@@ -9,8 +9,8 @@
 
     <?php require_once("../asset/include/header.php") ?>
 
-    <script src="logIn\index.js"></script>
-    <link rel="stylesheet" href="logIn/css.css">
+    <script src="index.js"></script>
+    <link rel="stylesheet" href="css.css">
     <title>LOGIN</title>
     
 </head>

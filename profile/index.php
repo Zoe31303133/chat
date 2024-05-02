@@ -9,9 +9,9 @@
 <head>
 
     <?php require_once("../asset/include/header.php") ?>
-    <script src="chatroom/index.js"></script>
-    <script src="profile/index.js"></script>
-    <link rel="stylesheet" href="profile/css.css">
+    <script src="/chat/chatroom/index.js"></script>
+    <script src="index.js"></script>
+    <link rel="stylesheet" href="css.css">
 
     <title>Document</title>
     

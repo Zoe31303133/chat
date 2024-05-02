@@ -6,8 +6,8 @@
 
             <?php require_once("../asset/include/header.php") ?>
 
-            <script src="signUp\index.js"></script>
-            <link rel="stylesheet" href="signUp/css.css">
+            <script src="index.js"></script>
+            <link rel="stylesheet" href="css.css">
             <title>SIGN UP</title>
             
         </head>
@@ -21,7 +21,7 @@
                 <form id="signUp_form" action="/chat/signUp/signUp.inc.php" method="POST" enctype="multipart/form-data">
                     
                     <div id="edit_photo_wrapper" class="form_input">
-                        <img src="asset/include/default_user.jpg" alt="X" id="edit_photo" class="">
+                        <img src="/chat/asset/include/default_user.jpg" alt="X" id="edit_photo" class="">
                         <div id="photo_edit_button">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-pencil" viewBox="0 0 16 16">
