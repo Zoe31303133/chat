@@ -9,12 +9,16 @@
 
 
     function get_contacts($my_uid){
-            $sql = "select t.room_id, uid, text, datetime, if(type=\"group\", t.room_id, uid) as photo 
-            from (select room_id, text, datetime from messages 
-                    where id in 
-                    (select max(id) from messages as m join (select room_id from paticipants where uid= ?) as p on m.room_id = p.room_id  group by p.room_id) order by datetime desc) as t  
-                    join paticipants as p on t.room_id=p.room_id  join chatrooms as c on p.room_id=c.room_id 
-                    where uid!= ? order by datetime desc;";
+        
+            $sql = "select * from   
+                        (select max(id) as id from messages as m 
+                            join (select room_id from paticipants where uid= ?) as p on m.room_id = p.room_id group by p.room_id
+                        ) as t     
+                    join messages as m on t.id = m.id 
+                    join paticipants as p on m.room_id = p.room_id  
+                    where uid != ? 
+                    order by t.id desc;";
+
             $conn = connection();
             $stmt = mysqli_stmt_init($conn);
             mysqli_stmt_prepare($stmt, $sql);
