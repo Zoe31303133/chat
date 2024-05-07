@@ -16,13 +16,6 @@ body{
     flex:1;
 }
 
-/* * {
-    border-width: 0.1px;
-    border-style: solid;
-    border-color: black;
-    
-} */
-
 .navbar{
     background-color: rgb(173, 173, 173);
     padding-inline: 2em;
@@ -84,15 +77,11 @@ body{
     width: 1.25em;
 }
 
-
-
-
-
-
 .body {
     display: flex;
     flex: 1;
     flex-direction: row;
+    overflow: hidden;
 }
 
 .side_bar{
@@ -132,7 +121,7 @@ body{
     width: 15%;
     min-width: 15em;
     background-color: rgb(212, 212, 212);
-
+    overflow: scroll;
 }
 
 .contact ,.last_message{
