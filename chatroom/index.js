@@ -94,6 +94,7 @@ $(document).ready(function () {
   $(".my_photo").attr("src", "/chat/file/" + my_uid);
 
   $(".user_img").on("error", function(e){
+    this.onerror = null;
     this.src = "/chat/asset/include/default_user.jpg";
 })
 
@@ -185,6 +186,7 @@ function display_contacts_list(data) {
     $(".contact_list").append(contact);
 
     $(".contact_list img").on("error", function(e){
+      this.onerror = null;
       this.src = "/chat/asset/include/default_user.jpg";
   })
 
@@ -227,6 +229,7 @@ function display_last_messange_list(data){
     $(".contact_list").append(last_message_DOM);
 
     $(".contact_list img").on("error", function(e){
+      this.onerror = null;
       this.src = "/chat/asset/include/default_user.jpg";
   })
   });
@@ -265,6 +268,7 @@ function load_room(session_room_id) {
   }
 
   $(".room_photo").on("error", function(e){
+      this.onerror = null;
       this.src = "/chat/asset/include/default_user.jpg";
   })
 
@@ -333,27 +337,39 @@ function load_Message_into_chat(session_room_id) {
     });
 
     $(".message_area .user_img").on("error", function(e){
+        this.onerror = null;
         this.src = "/chat/asset/include/default_user.jpg";
     })
   });
 }
 
 function load_history(session_room_id, min_message_id) {
+
   $.get("/chat/chatroom/fetch_message_from_DB.php", {
-    room_id: session_room_id,
-    min_message_id: min_message_id,
-  }).done(function (data) {
-    data = JSON.parse(data);
-    if (!data) {
-      session_min_message_id = "end";
-    } else {
-      session_min_message_id = data["min_message_id"];
-      masseges = data["messages"];
-      masseges.reverse();
-      masseges.forEach((element) => {
-        $(".message_area").append(create_text_DOM(element));
-      });
-    }
+
+      room_id: session_room_id,
+      min_message_id: min_message_id,
+
+    }).done(function (data) {
+
+      data = JSON.parse(data);
+      if (!data) 
+      {
+        session_min_message_id = "end";
+      } else 
+      {
+        session_min_message_id = data["min_message_id"];
+        masseges = data["messages"];
+        masseges.reverse();
+        masseges.forEach((element) => {
+          $(".message_area").append(create_text_DOM(element));
+        });
+
+        $(".message_area .user_img").on("error", function(e){
+          this.onerror = null;
+          this.src = "/chat/asset/include/default_user.jpg";
+        })
+      }
   });
 }
 
