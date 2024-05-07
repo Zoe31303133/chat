@@ -1,7 +1,5 @@
 <?php
 
-    // TODO: 驗證資料是否，節省DB資源消耗
-
     session_start();    
     require_once("../asset/setup/DBconnect.php");
 
@@ -23,13 +21,8 @@
 
         
     valiadate($_POST);
-
     photo_is_upload() && update_user_photo($_POST["uid"]);
-    
     update_user_info($_POST);
-
-
-
 
 
     // Funciion
@@ -95,21 +88,19 @@
     function photo_is_upload(){
         return $_FILES['photo']['size']!=0;
     }
-    
-
 
     function update_user_photo($uid){
 
         $target_dir = "../file/";
-        $file_extension = pathinfo($_FILES["photo"]["name"], PATHINFO_EXTENSION);
-        $target_file = $target_dir . $uid. "." .$file_extension;
+        $file_extension = pathinfo($_FILES['photo']["name"], PATHINFO_EXTENSION);
+        $target_file = $target_dir . $uid;
         echo $target_file;
         $uploadOk = 1;
-        $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+    
         
         // Check if image file is a actual image or fake image
         if(isset($_POST["submit"])) {
-        $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
+        $check = getimagesize($_FILES['photo']["tmp_name"]);
         if($check !== false) {
             echo "File is an image - " . $check["mime"] . ".";
             $uploadOk = 1;
@@ -120,14 +111,14 @@
         }
 
         // Check file size
-        if ($_FILES["fileToUpload"]["size"] > 500000) {
+        if ($_FILES['photo']["size"] > 500000) {
         echo "Sorry, your file is too large.";
         $uploadOk = 0;
         }
 
         // Allow certain file formats
-        if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg") {
-        echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+        if($file_extension != "jpg" && $file_extension != "png" && $file_extension != "jpeg") {
+        echo "Sorry, only JPG, JPEG & PNG files are allowed.";
         $uploadOk = 0;
         }
 
@@ -136,11 +127,11 @@
         echo "Sorry, your file was not uploaded.";
         // if everything is ok, try to upload file
         } else {
-        if (move_uploaded_file($_FILES["photo"]["tmp_name"], $target_file)) {
+        if (move_uploaded_file($_FILES['photo']["tmp_name"], $target_file)) {
 
             // rename($target_file, str_replace($file_extension, "", $target_file));
 
-            echo "The file ". htmlspecialchars( basename( $_FILES["fileToUpload"]["name"])). " has been uploaded.";
+            echo "The file ". htmlspecialchars( basename( $_FILES['photo']["name"])). " has been uploaded.";
         } else {
             echo "Sorry, there was an error uploading your file.";
         }
