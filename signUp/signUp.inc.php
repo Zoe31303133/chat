@@ -107,7 +107,6 @@ function valiadate_user_photo(){
 }
 
 function sign_up_user(){
-    
 
     $id = $_POST['id'];
     $name = $_POST['name'];
@@ -124,12 +123,10 @@ function sign_up_user(){
             $target_dir = "../file/";
             $file_new_path = $target_dir . $id ;
             upload_user_photo($file_new_path);
-            
-            echo "success";
         }
         
         add_user($id, $name, $phone, $email, $encrypted_password);
-        
+        echo "success";
 
     }
     catch(Exception $e){
